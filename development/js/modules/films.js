@@ -38,28 +38,22 @@
 		 */
 		$(window).resize(function()
 		{
-			$('#head').animate(
-			{
-				scrollTop : app.model.scroll_top
-			}, 0);
+			//$('#head').animate( { scrollTop : app.model.scroll_top }, 0);
 			//app.model.setup_window();
 			//check_film_offset();
 			//setInterval(function() { set_image_scope(); }, 1000);
 		});
 		$(window).scroll(function()
 		{
-			$('#head').animate(
-			{
-				scrollTop : app.model.scroll_top
-			}, 0);
+			//$('#head').animate( { scrollTop : app.model.scroll_top }, 0);
 			//app.model.setup_window();
 			//check_film_offset();
 			//setInterval(function() { set_image_scope(); }, 1000);
 		});
 
 		$(document).on('click', '.play-button', on_click_play);
-
-		$(document).on('mouseover', '.collection-button', on_rollover_collection);
+		$(document).on('click', '.collection-button', on_click_collection);
+		
 		$(document).on('mouseleave', '.collection-menu', on_rollout_collection);
 
 		$('#player').hide();
@@ -123,7 +117,7 @@
 		on_uri_change();
 	}
 
-	function on_rollover_collection(event)
+	function on_click_collection(event)
 	{
 		var target = $(event.currentTarget).parent();
 		target.find('.collection-menu').remove();
@@ -227,23 +221,35 @@
 			if (!film.data.poster)
 			{
 				// add empty frame
-				html += '' + '<img src="" alt="" border="0" width="140" height="200" class="" />' + '<a href="#" target="_self" class="empty-button"></a>';
+				html += '' + 
+					'<img src="" alt="" border="0" width="140" height="200" class="" />' + 
+					'<a href="#" target="_self" class="empty-button"></a>';
 			}
 			else
 			{
 				if (!check_for_collection(film))
 				{
-					html += '' + '<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + '<a href="' + app.model.film_uri + '" target="_blank" class="play-button"></a>';
+					// film
+					html += '' + 
+						'<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + 
+						'<a href="' + app.model.film_uri + '" target="_blank" class="play-button"></a>';
 				}
 				else
 				{
-					html += '' + '<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + '<a href="" target="_self" class="collection-button"></a>';
+					// collection
+					html += '' + 
+						'<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + 
+						'<a href="javascript:void(0);" target="_self" class="collection-button"></a>';
 				}
 			}
 
 			if (!film.data.poster)
 			{
-				html += '<div class="google-search">' + film.name + " " + film.year + "<br />" + '<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >GOOGLE filmposter suggestion</a>' + '</div>';
+				// add search suggection
+				html += '<div class="google-search">' + 
+						film.name + " " + film.year + "<br />" + 
+						'<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >Google filmposter search >></a>' + 
+					'</div>';
 			}
 
 			/**
