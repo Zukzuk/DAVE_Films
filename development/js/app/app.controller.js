@@ -119,17 +119,7 @@ $.extend(Controller.prototype,
 		{
 			// login_view handled in template for autocompletion
 			case "login_view":
-				app.events.dispatch("ADD_VIEW",
-				{
-					view : 'login'
-				});
-				return
-				{
-					success : function()
-					{
-						console.log("toggle login_view success :: html visible");
-					}
-				};
+				app.events.dispatch("ADD_VIEW", { view : 'login' }); return { success : function() { console.log("toggle login_view success :: html visible"); } };
 				break;
 
 			default:
