@@ -17,7 +17,8 @@
     <meta property="og:description" content=""/>
     <meta property="og:url" content="" />
     
-    <title><?php if(! is_null($page_title)) echo $page_title; ?></title>
+    <title><?php
+		if (!is_null($page_title)) echo $page_title; ?></title>
     
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
     
@@ -47,7 +48,9 @@
 
 <!-- HOTFIXES -->   
 <!-- Force console.log() for IE < 9 -->
-    <script type="text/javascript"> if (!window.console) console = { log: function() {} };</script> 
+    <script type="text/javascript">
+	if (!window.console) console = { log : function() {	} };
+</script> 
 	
 <!-- Application -->
 	<script type="text/javascript" src="js/app/app.js"></script>

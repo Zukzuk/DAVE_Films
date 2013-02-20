@@ -17,13 +17,13 @@
 switch(ENVIRONMENT)
 {
 	case 'development':
-		$config['base_url'] = "//localhost/DAVE_Films/trunk/development/";
+		$config['base_url'] = "//localhost/DAVE_Films/development/";
 		break;
 	case 'testing':
 		$config['base_url'] = "//testing/";
 		break;
 	case 'staging':
-		$config['base_url'] = "//localhost/filmserver/";
+		$config['base_url'] = "//staging/";
 		break;
 	case 'production':
 		$config['base_url'] = "//production/";
