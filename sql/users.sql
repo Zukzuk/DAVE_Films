@@ -36,10 +36,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(20) NOT NULL,
   `email` varchar(256) NOT NULL DEFAULT '@fitzroy.nl',
   `password` varchar(32) NOT NULL,
-  `bc_token` varchar(40) NOT NULL,
   `active` int(1) NOT NULL DEFAULT '0',
   `activity_id` int(11) NOT NULL,
-  `hours_contract` int(2) NOT NULL DEFAULT '40',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
 
@@ -47,8 +45,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `time_stamp`, `uid`, `role_id`, `firstname`, `lastname`, `username`, `email`, `password`, `bc_token`, `active`, `activity_id`, `hours_contract`) VALUES
-(11, '2012-12-17 11:18:31', 5738721, 1, 'Dave', 'Timmerman', 'dave.timmerman', 'dave@fitzroy.nl', '8a671ef0c6fbcefcfb8c682369a66523', '1cf25d743aaba775cff4692b0c30bbcbc7e8623b', 1, 2, 36);
+INSERT INTO `users` (`id`, `time_stamp`, `uid`, `role_id`, `firstname`, `lastname`, `username`, `email`, `password`, `active`, `activity_id`) VALUES
+(1, '2012-12-17 11:18:31', 5738721, 1, 'FIRST_NAME', 'LAST_NAME', 'USER_NAME', 'me@domain.nl', 'SOME_HASHED_AND_SALTED_PASSWORD', 1, 2);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
