@@ -35,7 +35,7 @@
 		 * Scrolltop search bar.
 		 * Also film gallery loader threshold.
 		 * Should make scrolling better, makes it worse now...
-		 */
+		 *
 		$(window).resize(function()
 		{
 			//$('#head').animate( { scrollTop : app.model.scroll_top }, 0);
@@ -50,6 +50,8 @@
 			//check_film_offset();
 			//setInterval(function() { set_image_scope(); }, 1000);
 		});
+		*
+		*/
 
 		$(document).on('click', '.play-button', on_click_play);
 		$(document).on('click', '.collection-button', on_click_collection);
@@ -120,24 +122,31 @@
 	function on_click_collection(event)
 	{
 		var target = $(event.currentTarget).parent();
-		target.find('.collection-menu').remove();
+		var menu = target.find('.collection-menu');
+		menu.remove();
 
 		app.data.get_collection(target.data('directory')).success(function(response)
 		{
 			//console.log(data);
 			var entries = response.payload.data.entries;
 			target.append('<div class="collection-menu"><div class="inner-menu"><ul></ul></div></div>');
+			menu = target.find('.collection-menu');
+			menu.animate({opacity:0},0).animate({opacity:1},500);
+			menu.find('ul').animate({opacity:0},0);
 			for (var i = 0; i < entries.length; i++)
 			{
 				target.find('.collection-menu .inner-menu ul').append('<li><a class="small awesome">' + entries[i].filename + '</a></li>');
 			};
+			target.find('.collection-menu ul').delay(300).animate({opacity:1},500);
 		});
 	}
 
 	function on_rollout_collection(event)
 	{
 		var target = $(event.currentTarget).parent();
-		target.find('.collection-menu').remove();
+		target.find('.collection-menu').animate({opacity:0},300, function(){
+			this.remove();
+		});
 	}
 
 	function on_uri_change()
