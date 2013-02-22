@@ -294,6 +294,7 @@ class Data_model extends CI_Model
 		{
 			$result['filename'] = $file;
 			$result['filetype'] = $filetype;
+			$result['name'] = substr($file, 0, -4);
 		}
 		$filetype = strtolower(substr($file, -4));
 		if ($filetype == 'xvid' || $filetype == 'm2ts')
@@ -301,6 +302,7 @@ class Data_model extends CI_Model
 			$result = array();
 			$result['filename'] = $file;
 			$result['filetype'] = $filetype;
+			$result['name'] = substr($file, 0, -5);
 		}
 		return $result;
 	}

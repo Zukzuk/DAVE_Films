@@ -30,11 +30,11 @@ $.extend(Model.prototype,
 	{
 		type : "unknown",
 		mobile_small : 300,
-		mobile : 480,
-		tablet_small : 590,
-		tablet : 960,
-		desktop : 1400,
-		wide : 1700,
+		mobile : 420,
+		tablet_small : 540,
+		tablet : 680,
+		desktop : 1200,
+		wide : 1600,
 		full : 2560
 	},
 	routing :

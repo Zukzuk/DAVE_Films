@@ -90,11 +90,8 @@
 			if (name.search(data.search_term.toLowerCase()) > -1)
 			{
 				var pos = $('.id-' + i).offset();
-				$('.id-' + i + ' .play-button').delay(1000).fadeIn(400).fadeOut(300).fadeIn(400).fadeOut(300).fadeIn(400).fadeOut(300).fadeIn(400);
-				$('.wrapper').animate(
-				{
-					scrollTop : pos.top - 50
-				}, 0);
+				$('.wrapper').animate( { scrollTop : pos.top - 50 }, 0);
+				$('.id-' + i).stop().delay(1000).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(3000);
 				break;
 			}
 		}
@@ -135,7 +132,7 @@
 			menu.find('ul').animate({opacity:0},0);
 			for (var i = 0; i < entries.length; i++)
 			{
-				target.find('.collection-menu .inner-menu ul').append('<li><a class="small awesome">' + entries[i].filename + '</a></li>');
+				target.find('.collection-menu .inner-menu ul').append('<li><a href="' + app.model.file_base + target.data('directory') +'/'+ entries[i].filename + '" target="_blank" class="small awesome">' + entries[i].name + '</a></li>');
 			};
 			target.find('.collection-menu ul').delay(300).animate({opacity:1},500);
 		});
@@ -232,7 +229,7 @@
 				// add empty frame
 				html += '' + 
 					'<img src="" alt="" border="0" width="140" height="200" class="" />' + 
-					'<a href="#" target="_self" class="empty-button"></a>';
+					'<a href="javascript:void(0);" target="_self" class="empty-button"></a>';
 			}
 			else
 			{

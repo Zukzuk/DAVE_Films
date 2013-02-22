@@ -106,12 +106,9 @@ b, strong { font-weight: bold; }
 a, a:link, a:active, a:visited 
 { 
   .transition(.25);
-  font-family:ZwoRegular-Plain;
-  color:@color-brand; outline: none; text-decoration:none; 
+  outline: none; 
+  text-decoration:none;  
 }
-a:hover { color:@color-brand; }
-a:hover, a:active { outline: 0; }
-a:focus { outline: thin dotted; }
 
 .api a { color:black; padding:5px; }
 .api header a { padding:0; }
@@ -242,7 +239,7 @@ body
   border: 0 none;
   font-weight: bold;
   font-size:12px;
-  color: @color-grey-dark;
+  color: @color-grey-near-light;
   width:150px;
   padding: 6px 15px 6px 35px;
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.3); 
@@ -255,12 +252,19 @@ body
 #search input[type="text"]:focus 
 {
   background: url(../../images/ui/search-dark-filmreel.png) no-repeat 10px 6px #fcfcfc;
-  color: @color-grey-light;
+  color: @color-grey-near-dark;
   width: 200px;
+  margin-left:-25px;
   -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
   -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none; 
 }
 
 

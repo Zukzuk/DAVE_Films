@@ -2,7 +2,7 @@
 	<form method="get" action="" id="search">
 		<div id="loader-small"><img src="images/ui/ajax-loader.gif" width="20" height="20" />
 		</div>
-		<input name="search" type="text" size="40" placeholder="Search your flick!" />
+		<input name="search" type="text" size="40" placeholder="search..." />
 	</form>
 </section>
 </section>
