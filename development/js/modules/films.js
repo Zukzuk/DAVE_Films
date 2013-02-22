@@ -84,14 +84,34 @@
 
 	function do_search_films(data)
 	{
+		var images = $('img');
+		images.removeClass('grayscale').removeClass('disabled');
 		for (var i = 0; i < app.model.films_json.payload.length; i++)
 		{
 			var name = app.model.films_json.payload[i].name.toLowerCase();
 			if (name.search(data.search_term.toLowerCase()) > -1)
 			{
-				var pos = $('.id-' + i).offset();
+				var target = $('.id-' + i);
+				var images = $('img');
+				images.addClass('grayscale');
+				target.find('img').addClass('disabled');
+				target.find('img').removeClass('grayscale');
+				
+				var pos = target.offset();
 				$('.wrapper').animate( { scrollTop : pos.top - 50 }, 0);
-				$('.id-' + i).stop().delay(1000).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(3000);
+				target
+					.stop()
+					.delay(1000)
+					.animate({opacity:0.2}, 200)
+					.animate({opacity:1}, 200)
+					.animate({opacity:0.2}, 200)
+					.animate({opacity:1}, 200)
+					.animate({opacity:0.2}, 200)
+					.animate({opacity:1}, 3000, function()
+					{
+						images.addClass('disabled');	
+					}
+				);							
 				break;
 			}
 		}
@@ -312,6 +332,11 @@
 			//}
 		}
 		app.model.film_id = '';
+		var images = $('img');
+		images.addClass('grayscale').animate({opacity:1}, 1000, function()
+		{
+			images.addClass('disabled');	
+		});
 	}
 
 	function check_for_collection(film)
