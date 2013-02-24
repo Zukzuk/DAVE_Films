@@ -145,6 +145,7 @@ div#login { margin:50px auto; width:300px; height:220px;  }
 
 
 /* BODY */
+
 html, body { -webkit-font-smoothing: antialiased; }
 /* For the "inset" look only */
 html {
@@ -167,7 +168,7 @@ body
   left: 20px;
   bottom: 20px;
   right: 20px;
-  padding: 30px; 
+  padding: 0 30px 30px 30px; 
   overflow-y: scroll;
   overflow-x: hidden;
 }
@@ -228,10 +229,20 @@ body
   width:20px;
   height:20px;
 }
+#head
+{
+  position:relative;
+  display:block;
+  top:0;
+  z-index:10;
+  background-color : @color-grey-dark;
+  width:100%;
+}
 #search 
 {
-  margin:10px auto;
+  margin:0px auto;
   width:150px;
+  height:80px;
 }
 #search input[type="text"] 
 {
@@ -273,13 +284,13 @@ button:focus {
 {
   margin:50px auto;
 }
-.full #films { max-width:1440px; }
-.wide #films { max-width:1160px; }
-.desktop #films { max-width:870px; }
-.tablet #films { max-width:580px; }
-.tablet_small #films { max-width:440px; }
-.mobile #films { max-width:290px; }
-.mobile_small #films { max-width:150px; }
+.full #films { max-width:1600px; }
+.wide #films { max-width:1300px; }
+.desktop #films { max-width:960px; }
+.tablet #films { max-width:640px; }
+.tablet_small #films { max-width:480px; }
+.mobile #films { max-width:320px; }
+.mobile_small #films { max-width:148px; } 
 
 // player
 #player
@@ -503,6 +514,10 @@ li:hover
   overflow:hidden;
   //background:rgba(30,30,30,0.8);
   background:@color-grey-near-dark; 
+  &.left
+  {
+    left:0px; 
+  }
   .inner-menu
   {
     position:absolute;

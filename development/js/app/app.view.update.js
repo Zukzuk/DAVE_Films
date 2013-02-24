@@ -22,26 +22,14 @@ $.extend(ViewUpdate.prototype,
 	clear : function()
 	{
 		// clear class here
-		this.html = function()
-		{
-		};
+		this.html = function() { };
 
-		this.set_login_feedback = function()
-		{
-		};
-		this.set_navigation = function()
-		{
-		};
-		this.default_page_update = function()
-		{
-		};
+		this.set_login_feedback = function() { };
+		this.set_navigation = function() { };
+		this.default_page_update = function() { };
 
-		this.add_flash = function()
-		{
-		};
-		this.trace_object = function()
-		{
-		};
+		this.add_flash = function() { };
+		this.trace_object = function() { };
 	},
 
 	setup : function()
@@ -129,12 +117,8 @@ $.extend(ViewUpdate.prototype,
 		}
 
 		// remove loaders
-		$('#loader-small').animate(
-		{
-			opacity : 0
-		}, 1000, function()
-		{
-			//this.remove();
+		$('#loader-small').animate( { opacity : 0 }, 1000, function() { 
+			//this.remove(); 
 		});
 	},
 

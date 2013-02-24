@@ -20,46 +20,40 @@
 				//if(device_changed) player_resize();
 			});
 		}
-
-		$('#search').submit(function()
-		{
-			//alert('Handler for .submit() called.');
-			do_search_films(
-			{
-				search_term : $('input[name=search]').val()
-			});
-			return false;
-		});
-
+		
 		/**
 		 * Scrolltop search bar.
 		 * Also film gallery loader threshold.
 		 * Should make scrolling better, makes it worse now...
-		 *
-		$(window).resize(function()
+		 */
+		$('.wrapper').resize(function()
 		{
-			//$('#head').animate( { scrollTop : app.model.scroll_top }, 0);
-			//app.model.setup_window();
+			app.model.setup_window();
+			$('#head').css( 'top', app.model.scroll_top+'px' );
 			//check_film_offset();
 			//setInterval(function() { set_image_scope(); }, 1000);
 		});
-		$(window).scroll(function()
+		$('.wrapper').scroll(function()
 		{
-			//$('#head').animate( { scrollTop : app.model.scroll_top }, 0);
-			//app.model.setup_window();
+			app.model.setup_window();
+			$('#head').css( 'top', app.model.scroll_top+'px' );
 			//check_film_offset();
 			//setInterval(function() { set_image_scope(); }, 1000);
 		});
-		*
-		*/
 
 		$(document).on('click', '.play-button', on_click_play);
 		$(document).on('click', '.collection-button', on_click_collection);
-		
 		$(document).on('mouseleave', '.collection-menu', on_rollout_collection);
 
 		$('#player').hide();
-
+		
+		$('#search').submit(function()
+		{
+			$('.wrapper').animate( { scrollTop : 0 }, 0);
+			do_search_films( { search_term : $('input[name=search]').val() });
+			return false;
+		});
+			
 		app.data.get_all_films().success(function(response)
 		{
 			app.model.films_json = response;
@@ -98,7 +92,7 @@
 				target.find('img').removeClass('grayscale');
 				
 				var pos = target.offset();
-				$('.wrapper').animate( { scrollTop : pos.top - 50 }, 0);
+				$('.wrapper').animate( { scrollTop : pos.top - 150 }, 0);
 				target
 					.stop()
 					.delay(1000)
@@ -148,13 +142,13 @@
 			var entries = response.payload.data.entries;
 			target.append('<div class="collection-menu"><div class="inner-menu"><ul></ul></div></div>');
 			menu = target.find('.collection-menu');
-			menu.animate({opacity:0},0).animate({opacity:1},500);
+			menu.animate({opacity:0},0).animate({opacity:1},400);
 			menu.find('ul').animate({opacity:0},0);
 			for (var i = 0; i < entries.length; i++)
 			{
 				target.find('.collection-menu .inner-menu ul').append('<li><a href="' + app.model.file_base + target.data('directory') +'/'+ entries[i].filename + '" target="_blank" class="small awesome">' + entries[i].name + '</a></li>');
 			};
-			target.find('.collection-menu ul').delay(300).animate({opacity:1},500);
+			target.find('.collection-menu ul').delay(400).animate({opacity:1},400);
 		});
 	}
 
@@ -173,39 +167,39 @@
 		 *
 		 if(app.model.check_routing_filter('id'))
 		 {
-		 // deeplink found, hide gallery, show player
-		 if(app.model.film_id == '')
-		 {
-		 // deeplink triggered through page load, get film data
-		 console.log('The current deeplink wants to open "' + app.model.routing.filters.play[0] + '". Get all relevant data from the stored app.model.films_json');
-
-		 app.model.film_id = app.model.routing.filters.id[0];
-		 var film = app.model.films_json.all_films[app.model.film_id];
-		 var deeplink_name = get_deeplink_name(film.name);
-
-		 set_player_data(deeplink_name, film.data.directory, film.data.filename, film.data.poster);
-
-		 // retrigger film
-		 app.events.dispatch('NAVIGATE', { uri:app.model.get_routing_uri() });
-		 on_uri_change();
+			 // deeplink found, hide gallery, show player
+			 if(app.model.film_id == '')
+			 {
+				 // deeplink triggered through page load, get film data
+				 console.log('The current deeplink wants to open "' + app.model.routing.filters.play[0] + '". Get all relevant data from the stored app.model.films_json');
+		
+				 app.model.film_id = app.model.routing.filters.id[0];
+				 var film = app.model.films_json.all_films[app.model.film_id];
+				 var deeplink_name = get_deeplink_name(film.name);
+		
+				 set_player_data(deeplink_name, film.data.directory, film.data.filename, film.data.poster);
+		
+				 // retrigger film
+				 app.events.dispatch('NAVIGATE', { uri:app.model.get_routing_uri() });
+				 on_uri_change();
+			 }
+			 else
+			 {
+				 // deeplink triggered through ajax load, film data available in model
+				 // HTTP protocol logic:
+				 $('#films').hide();
+				 $('#player').show();
+				 $('#player video').attr('poster', app.model.poster_uri).html('<source src="' + app.model.film_uri + '" type="video/mp4"></source>');
+			 }
 		 }
 		 else
 		 {
-		 // deeplink triggered through ajax load, film data available in model
-		 // HTTP protocol logic:
-		 $('#films').hide();
-		 $('#player').show();
-		 $('#player video').attr('poster', app.model.poster_uri).html('<source src="' + app.model.film_uri + '" type="video/mp4"></source>');
-		 }
-		 }
-		 else
-		 {
-		 // no deeplink, hide player, show gallery
-		 // HTTP protocol logic:
-		 delete($('#player video'));
-		 $('#player video').remove();
-		 $('#player').hide().html('<video controls autoplay poster autobuffer preload="auto" name="media"></video>');
-		 player_resize();
+			 // no deeplink, hide player, show gallery
+			 // HTTP protocol logic:
+			 delete($('#player video'));
+			 $('#player video').remove();
+			 $('#player').hide().html('<video controls autoplay poster autobuffer preload="auto" name="media"></video>');
+			 player_resize();
 		 }
 		 */
 	}

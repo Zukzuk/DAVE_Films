@@ -26,28 +26,16 @@ $.extend(Model.prototype,
 	developer_lib : ["app", "fb", "dt"],
 	xhr_pool : [],
 	window_size : [],
-	device :
-	{
-		type : "unknown",
-		mobile_small : 300,
-		mobile : 420,
-		tablet_small : 540,
-		tablet : 680,
-		desktop : 1200,
-		wide : 1600,
-		full : 2560
-	},
-	routing :
-	{
-		type : "",
-		view : "",
-		filters :
-		{
-		}
-	},
-	external_uri_change : function(data)
-	{
-	},
+	device : { 	type : "unknown", 
+				mobile_small: 320, 
+				mobile : 480, 
+				tablet_small : 640, 
+				tablet : 960, 
+				desktop : 1300, 
+				wide : 1920, 
+				full : 2560 },
+	routing : { type : "", view : "", filters : { } },
+	external_uri_change : function(data) { },
 	current_page : '',
 
 	filter_types : ['play', 'id'],
@@ -72,9 +60,7 @@ $.extend(Model.prototype,
 	films_per_row : 0,
 	films_per_page : 10,
 	films_to_load_threshold : 0,
-	films_json :
-	{
-	},
+	films_json : { },
 	// TODO: Add to setup flow
 	server_base : 'http://localhost/films/',
 	// TODO: Add to setup flow
@@ -108,34 +94,19 @@ $.extend(Model.prototype,
 		console.log(this.app_name + "\n", "version : " + this.version + "\n", "base_url : " + this.base_url + "\n", "environment : " + this.environment + "\n", "language : " + this.language + "\n", "tracking : " + this.google_track_id + "\n", "js_deeplink : " + this.js_deeplink + "\n", "responsive : " + this.responsive + "\n", "login_target : " + this.login_target + "\n", "login_at_startup : " + this.login_at_startup + "\n", "responsive : " + this.responsive);
 
 		this.setup_console();
-		//this.setup_window();
+		this.setup_window();
 	},
 
 	clear : function()
 	{
 		// clear class here
-		this.setup_console = function()
-		{
-		};
-		this.setup_routing = function()
-		{
-		};
-		this.toggle_routing_filter = function()
-		{
-		};
-		this.replace_routing_filter = function()
-		{
-		};
-		this.get_routing_uri = function()
-		{
-		};
-		this.setup_device = function()
-		{
-		};
-		this.setup_window = function()
-		{
-		};
-	},
+		this.setup_console = function() { };
+		this.setup_routing = function() { };
+		this.toggle_routing_filter = function() { };
+		this.replace_routing_filter = function() { };
+		this.get_routing_uri = function() { };
+		this.setup_device = function() { };
+		this.setup_window = function() { }; },
 
 	setup : function()
 	{
@@ -149,8 +120,7 @@ $.extend(Model.prototype,
 	setup_console : function()
 	{
 		// set logging according to environment
-		if (this.developer == '')
-			this.developer = this.developer_lib.toString();
+		if (this.developer == '') this.developer = this.developer_lib.toString();
 		// get developer(s)
 		var explode = this.developer.split(',');
 		for (var i = 0; i < explode.length; i++)
@@ -177,23 +147,16 @@ $.extend(Model.prototype,
 		for (var i = 0; i < this.developer_lib.length; i++)
 		{
 			// nullify other logs
-			console[this.developer_lib[i]] = function()
-			{
-			};
+			console[this.developer_lib[i]] = function() { };
 		}
 		// nullify all remaining logs on production
 		if (this.environment == 'production')
 		{
-			if (!window.console)
-				window.console =
-				{
-				};
+			if (!window.console) window.console = { };
 			var methods = ["log", "debug", "warn", "info"];
 			for (var i = 0; i < methods.length; i++)
 			{
-				console[methods[i]] = function()
-				{
-				};
+				console[methods[i]] = function() { };
 			}
 		}
 	},
@@ -201,9 +164,7 @@ $.extend(Model.prototype,
 	setup_routing : function(deeplink)
 	{
 
-		var type = '', view = '', active_filters =
-		{
-		}, i = 0;
+		var type = '', view = '', active_filters = { }, i = 0;
 
 		if (deeplink.path != '/')
 		{
@@ -394,7 +355,7 @@ $.extend(Model.prototype,
 
 	setup_device : function()
 	{
-		this.window_size = [$(window).width(), $(window).height()];
+		this.window_size = [$(window).width()-100, $(window).height()-100];
 		var device_change = false;
 
 		if (this.window_size[0] <= this.device.mobile_small && this.device.type != 'mobile_small')
@@ -415,7 +376,6 @@ $.extend(Model.prototype,
 		else
 		if (this.window_size[0] > this.device.mobile && this.window_size[0] <= this.device.tablet_small && this.device.type != 'tablet_small')
 		{
-			//console.log("goto tablet");
 			$('body').removeClass(this.device.type).addClass('tablet_small');
 			this.device.type = 'tablet_small';
 			this.films_per_row = 3;
@@ -424,7 +384,6 @@ $.extend(Model.prototype,
 		else
 		if (this.window_size[0] > this.device.tablet_small && this.window_size[0] <= this.device.tablet && this.device.type != 'tablet')
 		{
-			//console.log("goto tablet");
 			$('body').removeClass(this.device.type).addClass('tablet');
 			this.device.type = 'tablet';
 			this.films_per_row = 4;
@@ -433,7 +392,6 @@ $.extend(Model.prototype,
 		else
 		if (this.window_size[0] > this.device.tablet && this.window_size[0] <= this.device.desktop && this.device.type != 'desktop')
 		{
-			//console.log("goto desktop");
 			$('body').removeClass(this.device.type).addClass('desktop');
 			this.device.type = 'desktop';
 			this.films_per_row = 6;
@@ -442,7 +400,6 @@ $.extend(Model.prototype,
 		else
 		if (this.window_size[0] > this.device.desktop && this.window_size[0] <= this.device.wide && this.device.type != 'wide')
 		{
-			//console.log("goto wide");
 			$('body').removeClass(this.device.type).addClass('wide');
 			this.device.type = 'wide';
 			this.films_per_row = 8;
@@ -451,7 +408,6 @@ $.extend(Model.prototype,
 		else
 		if (this.window_size[0] > this.device.wide && this.device.type != 'full')
 		{
-			//console.log("goto wide");
 			$('body').removeClass(this.device.type).addClass('full');
 			this.device.type = 'full';
 			this.films_per_row = 10;
@@ -460,6 +416,8 @@ $.extend(Model.prototype,
 
 		if (device_change)
 		{
+			$('#large-film').removeClass('left');
+			$('#large-film:nth-child('+this.films_per_row+'n)').addClass('left');
 			console.log("device.type : " + this.device.type + " | size : " + this.window_size[0] + "/" + this.window_size[1]);
 			return true;
 		}
@@ -469,10 +427,10 @@ $.extend(Model.prototype,
 	setup_window : function()
 	{
 		//this.window_width = $(window).width();
-		this.window_height = $(window).height();
-		this.scroll_top = $(window).scrollTop();
+		//this.window_height = $(window).height();
+		this.scroll_top = $('.wrapper').scrollTop();
 		//console.log('window_width : ' + this.window_width);
 		//console.log('window_height : ' + this.window_height);
-		//console.log('scroll_top : ' + this.scroll_top);
+		console.log('scroll_top : ' + this.scroll_top);
 	}
 }); 
