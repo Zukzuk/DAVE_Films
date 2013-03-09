@@ -42,6 +42,7 @@ class Login_model extends CI_Model
 	{
 		$base64_name = $_parameters['username'];
 		$base64_pw = $_parameters['password'];
+		$login_type = $_parameters['login_type'];
 
 		$response['error'] = FALSE;
 		$response['session'] = FALSE;
@@ -109,7 +110,18 @@ class Login_model extends CI_Model
 		{
 			$response['msg'] = 'Wrong username and/or password.';
 		}
-		return $response;
+		
+		switch($login_type)
+		{
+			case 'regular':
+				redirect('');
+				break;
+			
+			case 'ajax':
+				return $response;
+				break;
+		}
+		
 	}
 
 	public function process_logout()

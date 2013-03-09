@@ -49,17 +49,38 @@ class Login extends CI_Controller
 		$this->execute(__FUNCTION__, $mandatory, $optional);
 	}
 	
-    public function process_login()
+	public function process_login()
     {
     	if($this->testing)
 		{
 	    	$_GET['username'] = base64_encode($this->input->get('username'));
 			$_GET['password'] = base64_encode($this->input->get('password'));
-		}	
+			$_GET['login_type'] = 'ajax';
+		}
+		else
+		{
+			$_POST['username'] = base64_encode($this->input->post('username'));
+			$_POST['password'] = base64_encode($this->input->post('password'));
+			$_POST['login_type'] = 'regular';
+		}
 		
-    	$mandatory = array('username', 'password');
+    	$mandatory = array('username', 'password', 'login_type');
 		$optional = array();		
 		$this->execute(__FUNCTION__, $mandatory, $optional);
+    }	
+	
+    public function process_ajax_login()
+    {
+    	if($this->testing)
+		{
+	    	$_GET['username'] = base64_encode($this->input->get('username'));
+			$_GET['password'] = base64_encode($this->input->get('password'));
+			$_GET['login_type'] = 'ajax';
+		}	
+		
+    	$mandatory = array('username', 'password', 'login_type');
+		$optional = array();		
+		$this->execute('process_login', $mandatory, $optional);
     }	
 		
 	public function process_logout()

@@ -9,21 +9,11 @@ CustomApplication = function(data)
 
 $.extend(CustomApplication.prototype,
 {
-	model :
-	{
-	},
-	events :
-	{
-	},
-	view :
-	{
-	},
-	controller :
-	{
-	},
-	data :
-	{
-	},
+	model : { },
+	events : { },
+	view : { },
+	controller : { },
+	data : { },
 
 	///////////////
 	// initialize
@@ -42,35 +32,20 @@ $.extend(CustomApplication.prototype,
 	clear : function()
 	{
 		// clear class here
-		this.add_deeplinking = function()
-		{
-		};
-		this.navigate = function()
-		{
-		};
-		this.load_view = function()
-		{
-		};
-		this.do_login = function()
-		{
-		};
-		this.do_logout = function()
-		{
-		};
+		this.add_deeplinking = function() { };
+		this.navigate = function() { };
+		this.load_view = function() { };
+		this.do_login = function() { };
+		this.do_logout = function() { };
 
 	},
 
 	setup : function()
 	{
 		if (app.model.js_deeplink)
-			app.events.dispatch("ADD_DEEPLINKING",
-			{
-			});
+			app.events.dispatch("ADD_DEEPLINKING", { });
 		else
-			app.events.dispatch("NAVIGATE",
-			{
-				uri : '/'
-			});
+			app.events.dispatch("NAVIGATE", { uri : '/' });
 	},
 
 	///////////////
@@ -129,15 +104,9 @@ $.extend(CustomApplication.prototype,
 								console.app('routing :: user is not logged in');
 								console.app('routing :: login_at_startup is true, navigate to the login "page"');
 								if (app.model.routing.view == "login")
-									app.events.dispatch("LOAD_VIEW",
-									{
-										view : "login"
-									});
+									app.events.dispatch("LOAD_VIEW", { view : "login" });
 								else
-									app.events.dispatch("NAVIGATE",
-									{
-										uri : "login"
-									});
+									app.events.dispatch("NAVIGATE", { uri : "login" });
 							}
 							else
 							{
@@ -148,19 +117,12 @@ $.extend(CustomApplication.prototype,
 								app.model.lastname = response.lastname;
 
 								// redirect to landing "securedpage"
-								app.events.dispatch("NAVIGATE",
-								{
-									uri : app.model.landing_securedpage
-								});
+								app.events.dispatch("NAVIGATE", { uri : app.model.landing_securedpage });
 							}
 						});
 
 						// set navigation
-						app.events.dispatch('UPDATE_HTML',
-						{
-							update : 'set_navigation',
-							visible : false
-						});
+						app.events.dispatch('UPDATE_HTML', { update : 'set_navigation', visible : false });
 						app.model.startup_complete = true;
 					}
 					else
@@ -168,10 +130,7 @@ $.extend(CustomApplication.prototype,
 						// login not required, normal routing applies
 						console.app('routing :: no login required');
 						console.app('routing :: simply navigate to the requested "page"');
-						app.events.dispatch('LOAD_VIEW',
-						{
-							view : app.model.routing.view
-						});
+						app.events.dispatch('LOAD_VIEW', { view : app.model.routing.view });
 					}
 				}
 				else
@@ -179,10 +138,7 @@ $.extend(CustomApplication.prototype,
 					// startup complete, normal routing applies
 					console.app('routing :: startup complete');
 					console.app('routing :: simply navigate to the requested "page"');
-					app.events.dispatch('LOAD_VIEW',
-					{
-						view : app.model.routing.view
-					});
+					app.events.dispatch('LOAD_VIEW', { view : app.model.routing.view });
 				}
 			}
 
@@ -198,10 +154,7 @@ $.extend(CustomApplication.prototype,
 						// user is not logged in, redirect to login page
 						console.app('routing :: user is not logged in');
 						console.app('routing :: navigate to the login "page"');
-						app.events.dispatch('NAVIGATE',
-						{
-							uri : 'login'
-						});
+						app.events.dispatch('NAVIGATE', { uri : 'login' });
 					}
 					else
 					{
@@ -211,10 +164,7 @@ $.extend(CustomApplication.prototype,
 						app.model.lastname = response.lastname;
 
 						console.app('routing :: simply navigate to the requested "securedpage"');
-						app.events.dispatch("LOAD_VIEW",
-						{
-							view : app.model.routing.view
-						});
+						app.events.dispatch("LOAD_VIEW", { view : app.model.routing.view });
 
 						// set navigation when role_id is new
 						app.data.get_user_privileges().success(function(response)
@@ -222,16 +172,8 @@ $.extend(CustomApplication.prototype,
 							if (app.model.role_id != response.role_id)
 							{
 								app.model.role_id = response.role_id;
-								app.events.dispatch('UPDATE_HTML',
-								{
-									update : 'set_navigation',
-									visible : true,
-									role_id : response.role_id
-								});
-								app.events.dispatch('UPDATE_HTML',
-								{
-									update : 'default_page_update'
-								});
+								app.events.dispatch('UPDATE_HTML', { update : 'set_navigation', visible : true, role_id : response.role_id });
+								app.events.dispatch('UPDATE_HTML', { update : 'default_page_update' });
 							}
 						});
 					}
@@ -246,32 +188,19 @@ $.extend(CustomApplication.prototype,
 		if (app.model.js_deeplink)
 			$.address.path(data.uri);
 		else
-			app.events.dispatch('LOAD_VIEW',
-			{
-				view : data.view
-			});
+			app.events.dispatch('LOAD_VIEW', { view : data.view });
 	},
 
 	load_view : function(data)
 	{
 		if (app.model.routing.view != app.model.current_page)
 		{
-			$('#loader-small').animate(
-			{
-				opacity : 0
-			}, 0).animate(
-			{
-				opacity : 1
-			}, 400);
+			$('#loader-small').animate( { opacity : 0 }, 0).animate( { opacity : 1 }, 400);
 
 			// load view
 			app.controller.load_view(data.view).success(function(response)
 			{
-				app.events.dispatch("ADD_VIEW",
-				{
-					view : data.view,
-					html : response
-				});
+				app.events.dispatch("ADD_VIEW", { view : data.view, html : response });
 			});
 		}
 	},
@@ -281,18 +210,15 @@ $.extend(CustomApplication.prototype,
 		// get form input data
 		var username = $.base64Encode($('input[name=username]').val());
 		var password = $.base64Encode($('input[name=password]').val());
+		var login_type = 'ajax';
 
 		// check credentials
-		app.controller.process_login(username, password).success(function(response)
+		app.controller.process_login(username, password, login_type).success(function(response)
 		{
 			if (!response.login_status)
 			{
 				// user is not logged in.
-				app.events.dispatch("UPDATE_HTML",
-				{
-					update : 'set_login_feedback',
-					msg : response.msg
-				});
+				app.events.dispatch("UPDATE_HTML", { update : 'set_login_feedback', msg : response.msg });
 			}
 			else
 			{

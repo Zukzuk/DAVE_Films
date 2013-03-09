@@ -163,9 +163,7 @@ $.extend(Controller.prototype,
 		var type = 'POST';
 		var dataType = "json";
 		var cache = false;
-		var data =
-		{
-		};
+		var data = { };
 
 		return this.execute(url, type, dataType, cache, data, method);
 	},
@@ -176,7 +174,7 @@ $.extend(Controller.prototype,
 	 */
 	process_login : function(username, password)
 	{
-		var method = 'process_login';
+		var method = 'process_ajax_login';
 		var url = app.model.base_url + "login/" + method;
 
 		var type = 'POST';

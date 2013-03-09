@@ -431,6 +431,6 @@ $.extend(Model.prototype,
 		this.scroll_top = $('.wrapper').scrollTop();
 		//console.log('window_width : ' + this.window_width);
 		//console.log('window_height : ' + this.window_height);
-		console.log('scroll_top : ' + this.scroll_top);
+		//console.log('scroll_top : ' + this.scroll_top);
 	}
 }); 

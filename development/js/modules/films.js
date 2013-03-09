@@ -26,19 +26,56 @@
 		 * Also film gallery loader threshold.
 		 * Should make scrolling better, makes it worse now...
 		 */
+		var scroll_interval = {};
 		$('.wrapper').resize(function()
 		{
 			app.model.setup_window();
-			$('#head').css( 'top', app.model.scroll_top+'px' );
+			$('#head').css( 
+			{
+				'top': (app.model.scroll_top-80)+'px',
+				'-webkit-transition': 'none',
+				'-moz-transition': 'none',
+				'-o-transition': 'none',
+				'transition': 'none'
+			});
+			clearInterval(scroll_interval);
+			scroll_interval = setInterval(function() 
+			{ 
+				$('#head').css( 
+				{
+					'top': app.model.scroll_top+'px',
+					'-webkit-transition': 'all 1s ease-out',
+					'-moz-transition': 'all 1s ease-out',
+					'-o-transition': 'all 1s ease-out',
+					'transition': 'all 1s ease-out'
+				});
+			}, 2000);
 			//check_film_offset();
-			//setInterval(function() { set_image_scope(); }, 1000);
 		});
 		$('.wrapper').scroll(function()
 		{
 			app.model.setup_window();
-			$('#head').css( 'top', app.model.scroll_top+'px' );
+			$('#head').css( 
+			{
+				'top': (app.model.scroll_top-80)+'px',
+				'-webkit-transition': 'none',
+				'-moz-transition': 'none',
+				'-o-transition': 'none',
+				'transition': 'none'
+			});
+			clearInterval(scroll_interval);
+			scroll_interval = setInterval(function() 
+			{ 
+				$('#head').css( 
+				{
+					'top': app.model.scroll_top+'px',
+					'-webkit-transition': 'all 1s ease-out',
+					'-moz-transition': 'all 1s ease-out',
+					'-o-transition': 'all 1s ease-out',
+					'transition': 'all 1s ease-out'
+				});
+			}, 2000);
 			//check_film_offset();
-			//setInterval(function() { set_image_scope(); }, 1000);
 		});
 
 		$(document).on('click', '.play-button', on_click_play);
