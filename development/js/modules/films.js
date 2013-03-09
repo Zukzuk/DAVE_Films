@@ -226,8 +226,7 @@
 			html = '';
 
 			// Add alphabet tiles
-			if (!i)
-				html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';
+			if (!i)	html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';
 			alphabet_entry = get_alphabet_tile(film.name);
 			html += alphabet_entry;
 
@@ -236,10 +235,9 @@
 			app.model.film_uri = app.model.file_base + film.data.directory + '/' + film.data.filename;
 			app.model.poster_uri = app.model.server_base + film.data.directory + '/' + film.data.poster;
 
-			html += '<li class="film-large id-' + app.model.film_id + '" data-id="' + app.model.film_id + '" data-name="' + deeplink_name + '" data-directory="' + film.data.directory + '" data-film="' + film.data.filename + '" data-poster="' + film.data.poster + '">';
+			html += '<li class="film-large shadowed-background id-' + app.model.film_id + '" data-id="' + app.model.film_id + '" data-name="' + deeplink_name + '" data-directory="' + film.data.directory + '" data-film="' + film.data.filename + '" data-poster="' + film.data.poster + '">';
 
-			if (!film.data.poster)
-			{
+			if (!film.data.poster) {
 				// add empty frame
 				html += '' + 
 					'<img src="" alt="" border="0" width="140" height="200" class="" />' + 
@@ -247,15 +245,13 @@
 			}
 			else
 			{
-				if (!check_for_collection(film))
-				{
+				if (!check_for_collection(film)) {
 					// film
 					html += '' + 
 						'<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + 
 						'<a href="' + app.model.film_uri + '" target="_blank" class="play-button"></a>';
 				}
-				else
-				{
+				else {
 					// collection
 					html += '' + 
 						'<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + 
@@ -263,12 +259,11 @@
 				}
 			}
 
-			if (!film.data.poster)
-			{
+			if (!film.data.poster) {
 				// add search suggection
 				html += '<div class="google-search">' + 
 						film.name + " " + film.year + "<br />" + 
-						'<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >Google filmposter search >></a>' + 
+						'<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >Google filmposter >></a>' + 
 					'</div>';
 			}
 
@@ -278,22 +273,14 @@
 			 * NOTICE: [lowres], [screener]
 			 * INFO: [collection], [remake]
 			 */
-			if (film.data.filetype != "mp4" && !check_for_collection(film))
-			{
+			if (film.data.filetype != "mp4") {
 				html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">' + film.data.filetype + '</div></div>';
 			}
-			if (check_for_collection(film))
-			{
-				html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">??</div></div>';
-			}
-			if (!film.data.types && film.data.filetype == "mp4")
-			{
+			if (!film.data.types && film.data.filetype == "mp4") {
 				html += '<div class="certificate"><i class="icon-certificate"></i><div class="text-certificate">HD</div></div>';
 			}
-			if (film.data.types)
-			{
-				$.each(film.data.types, function(key, type)
-				{
+			if (film.data.types) {
+				$.each(film.data.types, function(key, type) {
 					switch(type)
 					{
 						//info

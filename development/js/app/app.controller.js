@@ -22,31 +22,17 @@ $.extend(Controller.prototype,
 	clear : function()
 	{
 		// clear class here
-		this.execute = function()
-		{
-		};
+		this.execute = function() { };
 
-		this.xhr_abort = function()
-		{
-		};
+		this.xhr_abort = function() { };
 
-		this.load_view = function()
-		{
-		};
+		this.load_view = function() { };
 
-		this.check_login = function()
-		{
-		};
-		this.process_login = function()
-		{
-		};
-		this.process_logout = function()
-		{
-		};
+		this.check_login = function() { };
+		this.process_login = function() { };
+		this.process_logout = function() { };
 
-		this.send_email = function()
-		{
-		};
+		this.send_email = function() { };
 	},
 
 	setup : function()

@@ -49,14 +49,17 @@ $.extend(Data.prototype,
 			{
 				if (!response.session)
 				{
+					console.log(method + " msg :: " + response.msg);
 					if (app.model.environment != 'production')
 					{
 						alert('Session is currupt, the application will now reset.');
 						alert('msg : ' + response.msg);
 					}
-					window.location.reload(app.model.base_url);
+					app.controller.process_logout().success(function()
+					{						
+						window.location.reload(app.model.base_url);
+					});					
 				}
-				console.log(method + " msg :: " + response.msg);
 			},
 			error : function(xhr, ajaxOptions, thrownError)
 			{
