@@ -82,6 +82,8 @@
 	function on_click_page(event)
 	{
 		app.model.current_offset = $(event.currentTarget).data('id');
+		$('#head .page-button').removeClass('active');
+		$(event.currentTarget).addClass('active');
 		$('.wrapper').animate( { scrollTop : 0 }, 0);
 		set_header_menu();
 		parse_films();
@@ -349,7 +351,10 @@
 		var html = '';
 		for (var i = app.model.num_of_pages; i >= 0; i--) 
 		{
-			html += '<a href="javascript:void(0);" class="small awesome page-button" data-id="'+i+'">'+(i+1)+'</a>';
+			if(i == 0) 
+				html += '<a href="javascript:void(0);" class="small awesome page-button active" data-id="'+i+'">'+(i+1)+'</a>';
+			else
+				html += '<a href="javascript:void(0);" class="small awesome page-button" data-id="'+i+'">'+(i+1)+'</a>';
 		};
 		$('#head .menu').append(html);
 		$(document).on('click', '.page-button', on_click_page);

@@ -75,6 +75,7 @@ li:hover a.play-button,li:hover a.collection-button{-webkit-opacity:1;-moz-opaci
 .awesome:hover{background-color:#111;color:#fff;}
 .awesome:active{top:1px;background-color:#93aa00;color:#333333;}
 .small.awesome,.small.awesome:visited{font-size:10px;padding:;}
+.small.awesome.active{background-color:#93aa00;color:#333333;}
 .awesome,.awesome:visited,.medium.awesome,.medium.awesome:visited{font-size:13px;font-weight:bold;line-height:1;text-shadow:0 -1px 1px rgba(0, 0, 0, 0.25);}
 .large.awesome,.large.awesome:visited{font-size:14px;padding:8px 14px 9px;}
 .green.awesome,.green.awesome:visited{background-color:#91bd09;}
