@@ -4,12 +4,13 @@
 
 (function()
 {
-	init();
 	function init()
 	{
+		// reset event listeners
 		$(document).off();
 		$(window).off();
-
+	
+		// responsive javascript / css behaviour
 		if (app.model.responsive)
 		{
 			var device_changed = app.model.setup_device();
@@ -21,134 +22,73 @@
 			});
 		}
 		
-		/**
-		 * Scrolltop search bar.
-		 * Also film gallery loader threshold.
-		 * Should make scrolling better, makes it worse now...
-		 */
-		var scroll_interval = {};
+		// setup header menu scrolling.
+		app.model.scroll_interval = {};
 		$('.wrapper').resize(function()
 		{
 			app.model.setup_window();
-			$('#head').css( 
-			{
-				'top': (app.model.scroll_top-80)+'px',
-				'-webkit-transition': 'none',
-				'-moz-transition': 'none',
-				'-o-transition': 'none',
-				'transition': 'none'
-			});
-			clearInterval(scroll_interval);
-			scroll_interval = setInterval(function() 
-			{ 
-				$('#head').css( 
-				{
-					'top': app.model.scroll_top+'px',
-					'-webkit-transition': 'all 1s ease-out',
-					'-moz-transition': 'all 1s ease-out',
-					'-o-transition': 'all 1s ease-out',
-					'transition': 'all 1s ease-out'
-				});
-			}, 2000);
-			//check_film_offset();
+			set_header_menu();
 		});
 		$('.wrapper').scroll(function()
 		{
 			app.model.setup_window();
-			$('#head').css( 
-			{
-				'top': (app.model.scroll_top-80)+'px',
-				'-webkit-transition': 'none',
-				'-moz-transition': 'none',
-				'-o-transition': 'none',
-				'transition': 'none'
-			});
-			clearInterval(scroll_interval);
-			scroll_interval = setInterval(function() 
-			{ 
-				$('#head').css( 
-				{
-					'top': app.model.scroll_top+'px',
-					'-webkit-transition': 'all 1s ease-out',
-					'-moz-transition': 'all 1s ease-out',
-					'-o-transition': 'all 1s ease-out',
-					'transition': 'all 1s ease-out'
-				});
-			}, 2000);
-			//check_film_offset();
+			set_header_menu();
 		});
-
-		$(document).on('click', '.play-button', on_click_play);
-		$(document).on('click', '.collection-button', on_click_collection);
-		$(document).on('mouseleave', '.collection-menu', on_rollout_collection);
-
+		
+		// remove some deprecated stuff
 		$('#player').hide();
 		
+		// add functionality to search bar
 		$('#search').submit(function()
 		{
 			$('.wrapper').animate( { scrollTop : 0 }, 0);
-			do_search_films( { search_term : $('input[name=search]').val() });
+			on_search_films( { search_term : $('input[name=search]').val() });
 			return false;
 		});
-			
+		
+		// parse films
 		app.data.get_all_films().success(function(response)
 		{
 			app.model.films_json = response;
+			set_paging();
 			parse_films();
-			//check_film_offset();
-			//set_image_scope();
 			on_uri_change();
 		});
-
+		
+				// add event listeners
+		$(document).on('click', '.play-button', on_click_play);
+		$(document).on('click', '.collection-button', on_click_collection);
+		$(document).on('mouseleave', '.collection-menu', on_rollout_collection);
+		
 		// add external event deeplink
 		app.model.external_uri_change = external_uri_change_films;
 	}
+	init();
+	
+	
+////////////////////////////////////////////////////////////////////////////	
+// EVENT HANDLING 
+////////////////////////////////////////////////////////////////////////////	
 
+	
+	// handle external navigate events
 	function external_uri_change_films(data)
 	{
-		app.events.dispatch('NAVIGATE',
-		{
-			uri : data.uri
-		});
+		app.events.dispatch('NAVIGATE', { uri : data.uri }); 
 		on_uri_change();
 	}
-
-	function do_search_films(data)
+	
+	// handle page swap events
+	function on_click_page(event)
 	{
-		var images = $('img');
-		images.removeClass('grayscale').removeClass('disabled');
-		for (var i = 0; i < app.model.films_json.payload.length; i++)
-		{
-			var name = app.model.films_json.payload[i].name.toLowerCase();
-			if (name.search(data.search_term.toLowerCase()) > -1)
-			{
-				var target = $('.id-' + i);
-				var images = $('img');
-				images.addClass('grayscale');
-				target.find('img').addClass('disabled');
-				target.find('img').removeClass('grayscale');
-				
-				var pos = target.offset();
-				$('.wrapper').animate( { scrollTop : pos.top - 150 }, 0);
-				target
-					.stop()
-					.delay(1000)
-					.animate({opacity:0.2}, 200)
-					.animate({opacity:1}, 200)
-					.animate({opacity:0.2}, 200)
-					.animate({opacity:1}, 200)
-					.animate({opacity:0.2}, 200)
-					.animate({opacity:1}, 3000, function()
-					{
-						images.addClass('disabled');	
-					}
-				);							
-				break;
-			}
-		}
+		app.model.current_offset = $(event.currentTarget).data('id');
+		$('.wrapper').animate( { scrollTop : 0 }, 0);
+		set_header_menu();
+		parse_films();
+		on_uri_change();
 	}
-
-	//play-button
+	
+	// handle click to play events
 	function on_click_play(event)
 	{
 		var target = $(event.currentTarget).parent();
@@ -160,13 +100,11 @@
 		//app.model.toggle_routing_filter('play', app.model.film_name);
 		//app.model.toggle_routing_filter('id', app.model.film_id);
 
-		app.events.dispatch('NAVIGATE',
-		{
-			uri : app.model.get_routing_uri()
-		});
+		app.events.dispatch('NAVIGATE', { uri : app.model.get_routing_uri() });
 		on_uri_change();
 	}
 
+	// handle click to show collection contents events
 	function on_click_collection(event)
 	{
 		var target = $(event.currentTarget).parent();
@@ -188,7 +126,8 @@
 			target.find('.collection-menu ul').delay(400).animate({opacity:1},400);
 		});
 	}
-
+	
+	// handle collection menu rollout events
 	function on_rollout_collection(event)
 	{
 		var target = $(event.currentTarget).parent();
@@ -196,7 +135,8 @@
 			this.remove();
 		});
 	}
-
+	
+	// handle filter changes
 	function on_uri_change()
 	{
 		/**
@@ -240,24 +180,70 @@
 		 }
 		 */
 	}
-
-	function clear_filters(event)
+	
+	// remove filters
+	function on_clear_filters(event)
 	{
 		/**
 		 * Not in use
 		 */
 	}
-
-	function parse_films()
+	
+	// handle search input / output
+	function on_search_films(data)
 	{
-		var target = $('#films ul');
-		//app.model.offset_pages = Math.ceil(app.model.films_json.all_films.length/app.model.films_per_page);
-
-		//for(var i = (app.model.current_offset*app.model.films_per_page); i < app.model.films_per_page+(app.model.current_offset*app.model.films_per_page); i++)
+		var images = $('img');
+		images.removeClass('grayscale').removeClass('disabled');
 		for (var i = 0; i < app.model.films_json.payload.length; i++)
 		{
-			//if(i < app.model.offset_pages * app.model.films_per_page)
-			//{
+			var name = app.model.films_json.payload[i].name.toLowerCase();
+			// TODO: search further than first -> name != app.model.last_search_term
+			if (name.search(data.search_term.toLowerCase()) > -1)
+			{
+				var target = $('.id-' + i);
+				var images = $('img');
+				images.addClass('grayscale');
+				target.find('img').addClass('disabled');
+				target.find('img').removeClass('grayscale');
+				
+				var pos = target.offset();
+				$('.wrapper').animate( { scrollTop : pos.top - 150 }, 0);
+				target
+					.stop()
+					.delay(1000)
+					.animate({opacity:0.2}, 200)
+					.animate({opacity:1}, 200)
+					.animate({opacity:0.2}, 200)
+					.animate({opacity:1}, 200)
+					.animate({opacity:0.2}, 200)
+					.animate({opacity:1}, 3000, function()
+					{
+						images.addClass('disabled');	
+					}
+				);							
+				break;
+			}
+		}
+	}
+
+
+////////////////////////////////////////////////////////////////////////////	
+// PAGE PARSING
+////////////////////////////////////////////////////////////////////////////	
+
+	
+	// parse loaded films
+	function parse_films()
+	{
+		var start_item = app.model.current_offset*app.model.films_per_page;
+		var end_item = app.model.films_per_page+(app.model.current_offset*app.model.films_per_page);
+		//end_item += fill_last_row();
+		
+		var target = $('#films ul');
+		target.empty();
+		
+		for(var i = start_item; i < end_item; i++)
+		{
 			app.model.film_id = i;
 			var film = app.model.films_json.payload[i];
 			html = '';
@@ -314,7 +300,7 @@
 				html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">' + film.data.filetype + '</div></div>';
 			}
 			if (!film.data.types && film.data.filetype == "mp4") {
-				html += '<div class="certificate"><i class="icon-certificate"></i><div class="text-certificate">HD</div></div>';
+				html += '<div class="bookmark"><i class="icon-bookmark hd"></i><div class="text-bookmark near-light">HD</div></div>';
 			}
 			if (film.data.types) {
 				$.each(film.data.types, function(key, type) {
@@ -347,7 +333,6 @@
 
 			html += '</li>';
 			target.append(html);
-			//}
 		}
 		app.model.film_id = '';
 		var images = $('img');
@@ -356,42 +341,21 @@
 			images.addClass('disabled');	
 		});
 	}
-
-	function check_for_collection(film)
+	
+	// set film paging
+	function set_paging()
 	{
-		var is_collection = false;
-		if (film.data.types)
+		app.model.num_of_pages = Math.floor(app.model.films_json.payload.length/app.model.films_per_page);
+		var html = '';
+		for (var i = app.model.num_of_pages; i >= 0; i--) 
 		{
-			for (var i = 0; i < film.data.types.length; i++)
-			{
-				if (film.data.types[i] == 'collection')
-				{
-					is_collection = true;
-					break;
-				}
-			};
-		}
-		return is_collection;
+			html += '<a href="javascript:void(0);" class="small awesome page-button" data-id="'+i+'">'+(i+1)+'</a>';
+		};
+		$('#head .menu').append(html);
+		$(document).on('click', '.page-button', on_click_page);
 	}
-
-	function get_deeplink_name(name)
-	{
-		var deeplink_name = name.toLowerCase();
-		deeplink_name = deeplink_name.replace(" - ", "-");
-		deeplink_name = escape(deeplink_name);
-		deeplink_name = deeplink_name.replace(/%20/g, "-");
-		return deeplink_name;
-	}
-
-	function set_player_data(name, directory, file, poster)
-	{
-		app.model.film_name = name;
-		app.model.film_file = file;
-		app.model.film_poster = poster;
-		app.model.film_uri = app.model.file_base + directory + '/' + file;
-		app.model.poster_uri = app.model.server_base + directory + '/' + poster;
-	}
-
+	
+	// add alphabetic tiles
 	function get_alphabet_tile(name)
 	{
 		var html = '';
@@ -416,78 +380,107 @@
 
 		return html;
 	}
+	
+	// fill the last row on a page with maximum amount of films
+	function fill_last_row()
+	{
+		
+	}
+	
+	// check if an item is a collection
+	function check_for_collection(film)
+	{
+		var is_collection = false;
+		if (film.data.types)
+		{
+			for (var i = 0; i < film.data.types.length; i++)
+			{
+				if (film.data.types[i] == 'collection')
+				{
+					is_collection = true;
+					break;
+				}
+			};
+		}
+		return is_collection;
+	}
+	
+	// get sanitized deeplink name
+	function get_deeplink_name(name)
+	{
+		var deeplink_name = name.toLowerCase();
+		deeplink_name = deeplink_name.replace(" - ", "-");
+		deeplink_name = escape(deeplink_name);
+		deeplink_name = deeplink_name.replace(/%20/g, "-");
+		return deeplink_name;
+	}
+	
+	// set data to play a film
+	function set_player_data(name, directory, file, poster)
+	{
+		app.model.film_name = name;
+		app.model.film_file = file;
+		app.model.film_poster = poster;
+		app.model.film_uri = app.model.file_base + directory + '/' + file;
+		app.model.poster_uri = app.model.server_base + directory + '/' + poster;
+	}
+	
+	// animate header menu
+	function set_header_menu()
+	{
+		if(app.model.scroll_top > 50)
+		{
+			$('#head').css( 
+			{
+				'top': (app.model.scroll_top-80)+'px', '-webkit-transition': 'none', '-moz-transition': 'none', '-o-transition': 'none', 'transition': 'none'
+			});
+			clearInterval(app.model.scroll_interval);
+			app.model.scroll_interval = setInterval(function() 
+			{ 
+				$('#head').css( 
+				{
+					'top': app.model.scroll_top+'px', '-webkit-transition': 'all 0.3s ease-out', '-moz-transition': 'all 0.3s ease-out', '-o-transition': 'all 0.3s ease-out', 'transition': 'all 0.3s ease-out'
+				});
+			}, 900);
+		}
+		else
+		{
+			$('#head').css( 
+			{
+				'top': app.model.scroll_top+'px', '-webkit-transition': 'all 0.3s', '-moz-transition': 'all 0.3s', '-o-transition': 'all 0.3s', 'transition': 'all 0.3s'
+			});
+		}
+	}
 
-	/**
-	 * Used for http progressive streaming. Stops streaming after 10 minutes or so.
-	 *
-	 function player_resize()
-	 {
-	 switch(app.model.device.type)
-	 {
-	 case 'mobile_small':
-	 case 'mobile':
-	 case 'tablet_small':
-	 $('#player video').attr('width', '320').attr('height', '240'); // QVGA
-	 break;
-
-	 case 'tablet':
-	 $('#player video').attr('width', '480').attr('height', '320'); // HVGA
-	 break;
-
-	 case 'desktop':
-	 $('#player video').attr('width', '800').attr('height', '600'); // SVGA
-	 break;
-
-	 case 'wide':
-	 $('#player video').attr('width', '1280').attr('height', '720'); // HD 720
-	 break;
-
-	 case 'full':
-	 $('#player video').attr('width', '1920').attr('height', '1080'); // HD 1080
-	 break;
-	 }
-	 }
-	 */
-
-	/**
-	 * Used for gallery loader threshold. Should make scrolling better, makes it worse now...
-	 *
-	 function check_film_offset()
-	 {
-	 app.model.films_to_load_threshold = Math.ceil((app.model.window_height+app.model.scroll_top)/204)*app.model.films_per_row + app.model.films_per_row;
-	 if(app.model.current_offset*app.model.films_per_page < app.model.films_to_load_threshold)
-	 {
-	 console.log('film threshold reached : ' + app.model.films_to_load_threshold);
-	 app.model.current_offset++;
-	 parse_films();
-	 }
-	 }
-	 */
-
-	/**
-	 *  Film gallery image hidden/visible scope. Should make scrolling better, makes it worse now...
-	 *
-	 function set_image_scope()
-	 {
-	 var film_width = 144;
-	 var film_height = 204;
-	 var num_of_columns = Math.floor(app.model.window_width/film_width);
-	 var num_of_rows_inscope = Math.ceil(app.model.window_height/film_height);
-	 var num_of_rows_outscope = Math.floor(app.model.scroll_top/film_height); // -1 for buffer row on top
-
-	 var first_in_scope = num_of_columns*num_of_rows_outscope;
-	 var last_in_scope = first_in_scope + num_of_columns*(num_of_rows_inscope+1); // +1 for buffer row on bottom
-	 //console.log(first_in_scope);
-	 //console.log(last_in_scope);
-
-	 $('.film-large').find('img').addClass('outscope');
-	 for (var i = first_in_scope; i < last_in_scope; i++)
-	 {
-	 $('.id-'+i).find('img').removeClass('outscope').addClass('inscope');
-	 };
-	 $('.inscope').removeClass('hidden');
-	 $('.outscope').addClass('hidden');
-	 }
-	 */
+	// Deprecated
+	// Used for http progressive streaming. 
+	// Stops streaming after 10 minutes or so.
+	function player_resize()
+	{
+		switch(app.model.device.type)
+		{
+			case 'mobile_small':
+			case 'mobile':
+			case 'tablet_small':
+				$('#player video').attr('width', '320').attr('height', '240'); // QVGA
+				break;
+		
+			case 'tablet':
+				$('#player video').attr('width', '480').attr('height', '320'); // HVGA
+				break;
+		
+			case 'desktop':
+				$('#player video').attr('width', '800').attr('height', '600'); // SVGA
+				break;
+		
+			case 'wide':
+				$('#player video').attr('width', '1280').attr('height', '720'); // HD 720
+				 reak;
+		
+			case 'full':
+				$('#player video').attr('width', '1920').attr('height', '1080'); // HD 1080
+				break;
+		}
+	}
 
 })(); 

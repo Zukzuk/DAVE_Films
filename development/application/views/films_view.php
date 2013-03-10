@@ -3,7 +3,9 @@
 		<div id="loader-small"><img src="images/ui/ajax-loader.gif" width="20" height="20" /></div>
 		<input name="search" type="text" size="40" placeholder="search..." />
 	</form>
-	<a href="javascript:void(0);" class="small awesome" onclick="app.events.dispatch('DO_LOGOUT'); return false;">Logout</a>
+	<div class="menu">
+		<a href="javascript:void(0);" class="small awesome logout-button" onclick="app.events.dispatch('DO_LOGOUT'); return false;">Logout</a>
+	</div>
 </section>
 <section id="films">
 	<ul></ul>

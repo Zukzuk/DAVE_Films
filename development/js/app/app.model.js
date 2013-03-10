@@ -51,19 +51,20 @@ $.extend(Model.prototype,
 	firstname : '',
 	lastname : '',
 	role_id : '',
-	alphabet_count : 0, //'#'
+	
 	window_width : 0,
 	window_height : 0,
 	scroll_top : 0,
+	scroll_interval : {},
+	
 	current_offset : 0,
-	offset_pages : 0,
+	num_of_pages : 0,
 	films_per_row : 0,
-	films_per_page : 10,
-	films_to_load_threshold : 0,
+	films_per_page : 100,
+	
 	films_json : { },
-	// TODO: Add to setup flow
+	alphabet_count : 0, //'#'
 	server_base : 'http://localhost/films/',
-	// TODO: Add to setup flow
 	file_base : 'file:///F:/',
 	film_id : 0,
 	film_name : '',
@@ -91,7 +92,18 @@ $.extend(Model.prototype,
 		this.login_at_startup = data.login_at_startup;
 		this.developer = data.developer;
 
-		console.log(this.app_name + "\n", "version : " + this.version + "\n", "base_url : " + this.base_url + "\n", "environment : " + this.environment + "\n", "language : " + this.language + "\n", "tracking : " + this.google_track_id + "\n", "js_deeplink : " + this.js_deeplink + "\n", "responsive : " + this.responsive + "\n", "login_target : " + this.login_target + "\n", "login_at_startup : " + this.login_at_startup + "\n", "responsive : " + this.responsive);
+		console.log(
+			this.app_name + "\n", 
+			"version : " + this.version + "\n", 
+			"base_url : " + this.base_url + "\n", 
+			"environment : " + this.environment + "\n", 
+			"language : " + this.language + "\n", 
+			"tracking : " + this.google_track_id + "\n", 
+			"js_deeplink : " + this.js_deeplink + "\n", 
+			"responsive : " + this.responsive + "\n", 
+			"login_target : " + this.login_target + "\n", 
+			"login_at_startup : " + this.login_at_startup + "\n", 
+			"responsive : " + this.responsive);
 
 		this.setup_console();
 		this.setup_window();
@@ -106,7 +118,8 @@ $.extend(Model.prototype,
 		this.replace_routing_filter = function() { };
 		this.get_routing_uri = function() { };
 		this.setup_device = function() { };
-		this.setup_window = function() { }; },
+		this.setup_window = function() { }; 
+	},
 
 	setup : function()
 	{

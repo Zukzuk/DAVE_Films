@@ -123,19 +123,23 @@ a, a:link, a:active, a:visited
   text-decoration:none;  
 }
 
-.api a { color:black; padding:5px; }
-.api header a { padding:0; }
-.api a:hover { background-color:@color-brand; color:white; }
-
 /* IMAGES */
 img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; } /* Improve image quality when scaled in IE7 + Remove the gap between images and borders on image containers
-
-/* Correct overflow not hidden in IE9 */
+// Correct overflow not hidden in IE9 */
 svg:not(:root) { overflow: hidden; }
 
 /* TABLE */
 table { border-collapse:collapse; border-spacing:0; }
 td { vertical-align:middle;}
+input:focus,
+select:focus,
+textarea:focus,
+button {
+  border : 0;
+}
+button:focus {
+    outline: none; 
+}
 
 /* LISTS */
 ul, ol { margin: 1em 0; padding: 0 0 0 0px; list-style:none; }
@@ -145,8 +149,13 @@ nav ul, nav ol { list-style: none; list-style-image: none; margin: 0; padding: 0
 /* HEADERS */
 h1, h2, h3, h4, h5 { font-weight:normal; font-family: @font-body; text-transform:uppercase; }
 
-
+// functionality
 .hidden{ display:none; }
+
+// api
+.api a { color:black; padding:5px; }
+.api header a { padding:0; }
+.api a:hover { background-color:@color-brand; color:white; }
 
 
 
@@ -212,7 +221,8 @@ body
   height: 120px;
   padding: 10px 30px 30px 30px;
   
-	label { 
+	label 
+	{ 
     width: 65px;
     display: block;
     float: left;
@@ -233,8 +243,8 @@ body
     .box-shadow-inset(0, 1px, 3px, rgba(0, 0, 0, 0.2));
     .border-radius(20px);
  }
- button {
-   border:0;
+ .login-button 
+ {
    float: right;
    margin: 9px 15px 0 0;
  }
@@ -245,15 +255,7 @@ body
 /* VIEW: FILMS */
 
 // search
-#loader-small
-{
-  position:relative;
-  display:block; 
-  top:24px; 
-  left:170px; 
-  width:20px;
-  height:20px;
-}
+
 #head
 {
   position:relative;
@@ -263,16 +265,35 @@ body
   background-color : @color-grey-dark;
   width:100%;
   height:80px;
-  .awesome {
-    float:right;
-    margin: -55px 0 0 0;
+  .menu
+  {
+    margin: -57px 0 0 0;
+    .logout-button 
+    {
+      float: right;
+    }
+    .page-button
+    {
+      float:right;
+      margin: 0 3px 0 0;
+    }
   }
+}
+
+#loader-small
+{
+  position:relative;
+  display:block; 
+  top:24px; 
+  left:170px; 
+  width:20px;
+  height:20px; 
 }
 
 #search
 {
   margin:0px auto;
-  width:150px;
+  width:200px;
   height:80px;
 }
 #search input[type="text"] 
@@ -299,12 +320,6 @@ body
   .box-shadow(0, 1px, 0, rgba(255, 255, 255, 0.1));
   .box-shadow-inset(0, 1px, 0, rgba(0, 0, 0, 0.9));
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-}
-input:focus,
-select:focus,
-textarea:focus,
-button:focus {
-    outline: none; 
 }
 
 // gallery
@@ -337,8 +352,8 @@ button:focus {
   width:140px;
   height:200px;
   text-align:center;
-    padding:4px;
-    margin:4px;
+  padding:4px;
+  margin:4px;
 }
 h1
 {
@@ -430,33 +445,6 @@ li:hover
   top:30px;
   left:6px;
 }
-.certificate
-{
-  position:relative;
-  display: block;
-  width:36px;
-  height:29px;
-  top:-197px;
-  left:-3px;
-  float:left;
-  color:@color-grey-near-light;
-  font-size:8px;
-  .text-certificate 
-  {
-    position:relative;
-    display: block; 
-    top:-22px;
-    width:36px;
-    text-align:center;
-  }
-  .icon-certificate 
-  {
-    position:relative;
-    display: block;
-    color:@color-grey-near-dark; //@color-grey-near-dark;
-    font-size:29px;
-  }
-}
 .bookmark
 {
   position:relative;
@@ -466,15 +454,16 @@ li:hover
   top:-204px;
   left:-3px;
   float:left; 
-  font-size:8px;  
+  font-size:7px;  
   .text-bookmark
   {
     position:relative;
     display: block;
     top:-24px;
-    width:35px;
+    width:34px;
     text-align:center;
     &.dark { color:@color-grey-near-dark; }
+    &.near-light { color:@color-grey-near-light; }
     &.light { color:@color-grey-light; }
   }
   .icon-bookmark
@@ -482,6 +471,7 @@ li:hover
     position:relative;
     display: block;
     font-size:28px;
+    &.hd { color:@color-grey-near-dark; }
     &.info { color:@color-kelly-vivid-yellowish-green; }
     &.notice { color:@color-kelly-vivid-yellow; }
     &.warning { color:@color-kelly-vivid-red; }
@@ -517,7 +507,8 @@ li:hover
     {
       padding:0px 12px 5px 12px;
     }
-    a {
+    a 
+    {
         width:225px;
     }
   }
