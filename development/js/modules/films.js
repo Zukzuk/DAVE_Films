@@ -262,13 +262,13 @@
 		
 		var target = $('#films ul');
 		target.empty();
-		for(var i = start_item; i < end_item; i++)
+		for(var i = start_item; i < end_item+1; i++)
 		{
 			app.model.film_id = i;
 			var film = app.model.films_json.payload[i];
 			html = '';
 			
-			if(film)
+			if(film || !film)
 			{
 				// Add alphabet tiles
 				if (!i)	html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';

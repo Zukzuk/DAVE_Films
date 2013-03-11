@@ -30,16 +30,10 @@ $.extend(View.prototype,
 	clear : function()
 	{
 		// clear class here
-		this.add = function()
-		{
-		};
+		this.add = function() { };
 
-		this.login_view = function()
-		{
-		};
-		this.films_view = function()
-		{
-		};
+		this.login_view = function() { };
+		this.films_view = function() { };
 	},
 
 	setup : function()
@@ -58,8 +52,7 @@ $.extend(View.prototype,
 		}
 		else
 		{
-			if (app.model.environment != 'production')
-				alert("'ADD_VIEW' :: '" + data.view + "' does not exist in js/app.view.js");
+			if (app.model.environment != 'production') alert("'ADD_VIEW' :: '" + data.view + "' does not exist in js/app.view.js");
 		}
 	},
 
@@ -73,10 +66,7 @@ $.extend(View.prototype,
 		$("#container").hide().empty().show();
 		$('#login').removeClass('hidden');
 		app.model.current_page = 'login';
-		app.events.dispatch('UPDATE_HTML',
-		{
-			update : 'default_page_update'
-		});
+		app.events.dispatch('UPDATE_HTML', { update : 'default_page_update' });
 	},
 
 	films_view : function(data)
@@ -85,10 +75,27 @@ $.extend(View.prototype,
 		app.data.get_user_privileges().success(function(response)
 		{
 			app.model.current_page = 'films';
-			app.events.dispatch('UPDATE_HTML',
-			{
-				update : 'default_page_update'
-			});
+			app.events.dispatch('UPDATE_HTML', { update : 'default_page_update' });
+			app.view.add_module('films');
+		});
+	},
+	
+	add_module: function(module_name)
+	{
+		var html_head = document.getElementsByTagName("head")[0];         
+        var module_script = document.createElement('script');
+        module_script.type = 'text/javascript';
+        module_script.id = module_name;
+        module_script.src = 'js/modules/'+module_name+'.js';
+        html_head.appendChild(module_script);
+	},
+	
+	remove_modules: function(module_name)
+	{
+		var scripts = $('head script');
+		$.each(scripts, function(key, script) 
+		{
+			if(!$(script).is('#app') && !$(script).is('#lib')) $(script).remove();
 		});
 	}
 });
