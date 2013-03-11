@@ -24,15 +24,16 @@
 		
 		// setup header menu scrolling.
 		app.model.scroll_interval = {};
-		$('.wrapper').resize(function()
+		var wrapper = $('.wrapper');
+		wrapper.resize(function()
 		{
 			app.model.setup_window();
-			set_header_menu();
+			set_menu();
 		});
-		$('.wrapper').scroll(function()
+		wrapper.scroll(function()
 		{
 			app.model.setup_window();
-			set_header_menu();
+			set_menu();
 		});
 		
 		// remove some deprecated stuff
@@ -41,7 +42,7 @@
 		// add functionality to search bar
 		$('#search').submit(function()
 		{
-			$('.wrapper').animate( { scrollTop : 0 }, 0);
+			wrapper.animate( { scrollTop : 0 }, 0);
 			on_search_films( { search_term : $('input[name=search]').val() });
 			return false;
 		});
@@ -52,13 +53,13 @@
 			app.model.films_json = response;
 			set_paging();
 			parse_films();
-			on_uri_change();
 		});
 		
-				// add event listeners
+		// add event listeners
 		$(document).on('click', '.play-button', on_click_play);
 		$(document).on('click', '.collection-button', on_click_collection);
 		$(document).on('mouseleave', '.collection-menu', on_rollout_collection);
+		$(document).on('click', '.suggest-button', on_click_suggest);
 		
 		// add external event deeplink
 		app.model.external_uri_change = external_uri_change_films;
@@ -75,19 +76,20 @@
 	function external_uri_change_films(data)
 	{
 		app.events.dispatch('NAVIGATE', { uri : data.uri }); 
-		on_uri_change();
 	}
 	
 	// handle page swap events
 	function on_click_page(event)
 	{
-		app.model.current_offset = $(event.currentTarget).data('id');
-		$('#head .page-button').removeClass('active');
+		if(typeof event === 'number') 
+			app.model.current_offset = event;
+		else
+			app.model.current_offset = $(event.currentTarget).data('id');
+		$('#menu .page-button').removeClass('active');
 		$(event.currentTarget).addClass('active');
 		$('.wrapper').animate( { scrollTop : 0 }, 0);
-		set_header_menu();
+		set_menu();
 		parse_films();
-		on_uri_change();
 	}
 	
 	// handle click to play events
@@ -103,7 +105,6 @@
 		//app.model.toggle_routing_filter('id', app.model.film_id);
 
 		app.events.dispatch('NAVIGATE', { uri : app.model.get_routing_uri() });
-		on_uri_change();
 	}
 
 	// handle click to show collection contents events
@@ -202,6 +203,15 @@
 			// TODO: search further than first -> name != app.model.last_search_term
 			if (name.search(data.search_term.toLowerCase()) > -1)
 			{
+				var search_offset = Math.floor(i/app.model.films_per_page);
+				if(app.model.search_offset != search_offset) 
+				{
+					on_click_page(search_offset);
+					$("#menu .page-button").removeClass('active');
+					var page_button = $("#menu .paging").find('[data-id="' + search_offset + '"]');
+					$(page_button).addClass('active');
+				}
+				
 				var target = $('.id-' + i);
 				var images = $('img');
 				images.addClass('grayscale');
@@ -211,6 +221,7 @@
 				var pos = target.offset();
 				$('.wrapper').animate( { scrollTop : pos.top - 150 }, 0);
 				target
+					.find('img')
 					.stop()
 					.delay(1000)
 					.animate({opacity:0.2}, 200)
@@ -226,6 +237,14 @@
 				break;
 			}
 		}
+	}
+	
+	// handle random suggestion
+	function on_click_suggest(event)
+	{
+		var random_id = Math.floor(Math.random()*app.model.films_json.payload.length);
+		var name = app.model.films_json.payload[random_id].name.toLowerCase();
+		on_search_films( { search_term : name } );
 	}
 
 
@@ -243,98 +262,100 @@
 		
 		var target = $('#films ul');
 		target.empty();
-		
 		for(var i = start_item; i < end_item; i++)
 		{
 			app.model.film_id = i;
 			var film = app.model.films_json.payload[i];
 			html = '';
-
-			// Add alphabet tiles
-			if (!i)	html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';
-			alphabet_entry = get_alphabet_tile(film.name);
-			html += alphabet_entry;
-
-			var deeplink_name = get_deeplink_name(film.name);
-			var search_name = deeplink_name.replace(/-/g, "+");
-			app.model.film_uri = app.model.file_base + film.data.directory + '/' + film.data.filename;
-			app.model.poster_uri = app.model.server_base + film.data.directory + '/' + film.data.poster;
-
-			html += '<li class="film-large shadowed-background id-' + app.model.film_id + '" data-id="' + app.model.film_id + '" data-name="' + deeplink_name + '" data-directory="' + film.data.directory + '" data-film="' + film.data.filename + '" data-poster="' + film.data.poster + '">';
-
-			if (!film.data.poster) {
-				// add empty frame
-				html += '' + 
-					'<img src="" alt="" border="0" width="140" height="200" class="" />' + 
-					'<a href="javascript:void(0);" target="_self" class="empty-button"></a>';
-			}
-			else
+			
+			if(film)
 			{
-				if (!check_for_collection(film)) {
-					// film
+				// Add alphabet tiles
+				if (!i)	html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';
+				alphabet_entry = get_alphabet_tile(film.name);
+				html += alphabet_entry;
+	
+				var deeplink_name = get_deeplink_name(film.name);
+				var search_name = deeplink_name.replace(/-/g, "+");
+				app.model.film_uri = app.model.file_base + film.data.directory + '/' + film.data.filename;
+				app.model.poster_uri = app.model.server_base + film.data.directory + '/' + film.data.poster;
+	
+				html += '<li class="film-large shadowed-background id-' + app.model.film_id + '" data-id="' + app.model.film_id + '" data-name="' + deeplink_name + '" data-directory="' + film.data.directory + '" data-film="' + film.data.filename + '" data-poster="' + film.data.poster + '">';
+	
+				if (!film.data.poster) {
+					// add empty frame
 					html += '' + 
-						'<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + 
-						'<a href="' + app.model.film_uri + '" target="_blank" class="play-button"></a>';
+						'<img src="" alt="" border="0" width="140" height="200" class="" />' + 
+						'<a href="javascript:void(0);" target="_self" class="empty-button"></a>';
 				}
-				else {
-					// collection
-					html += '' + 
-						'<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + 
-						'<a href="javascript:void(0);" target="_self" class="collection-button"></a>';
-				}
-			}
-
-			if (!film.data.poster) {
-				// add search suggection
-				html += '<div class="google-search">' + 
-						film.name + " " + film.year + "<br />" + 
-						'<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >Google filmposter >></a>' + 
-					'</div>';
-			}
-
-			/**
-			 * ICONS: icon-certificate, icon-bookmark, icon-info-sign, icon-warning-sign
-			 * CRITICAL: filetype != mp4, [nodub], [nosub]
-			 * NOTICE: [lowres], [screener]
-			 * INFO: [collection], [remake]
-			 */
-			if (film.data.filetype != "mp4") {
-				html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">' + film.data.filetype + '</div></div>';
-			}
-			if (!film.data.types && film.data.filetype == "mp4") {
-				html += '<div class="bookmark"><i class="icon-bookmark hd"></i><div class="text-bookmark near-light">HD</div></div>';
-			}
-			if (film.data.types) {
-				$.each(film.data.types, function(key, type) {
-					switch(type)
-					{
-						//info
-						case "collection":
-							html += '<div class="bookmark"><i class="icon-bookmark info"></i><div class="text-bookmark dark">CL</div></div>';
-							break;
-						case "remake":
-							html += '<div class="bookmark"><i class="icon-bookmark info"></i><div class="text-bookmark dark">RM</div></div>';
-							break;
-						//notice
-						case "lowres":
-							html += '<div class="bookmark"><i class="icon-bookmark notice"></i><div class="text-bookmark dark">LR</div></div>';
-							break;
-						case "screener":
-							html += '<div class="bookmark"><i class="icon-bookmark notice"></i><div class="text-bookmark dark">SC</div></div>';
-							break;
-						//warning
-						case "nodub":
-							html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">DU</div></div>';
-							break;
-						case "nosub":
-							html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">SU</div></div>';
-							break;
+				else
+				{
+					if (!check_for_collection(film)) {
+						// film
+						html += '' + 
+							'<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + 
+							'<a href="' + app.model.film_uri + '" target="_blank" class="play-button"></a>';
 					}
-				});
+					else {
+						// collection
+						html += '' + 
+							'<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + 
+							'<a href="javascript:void(0);" target="_self" class="collection-button"></a>';
+					}
+				}
+	
+				if (!film.data.poster) {
+					// add search suggection
+					html += '<div class="google-search">' + 
+							film.name + " " + film.year + "<br />" + 
+							'<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >Google filmposter >></a>' + 
+						'</div>';
+				}
+	
+				/**
+				 * ICONS: icon-certificate, icon-bookmark, icon-info-sign, icon-warning-sign
+				 * CRITICAL: filetype != mp4, [nodub], [nosub]
+				 * NOTICE: [lowres], [screener]
+				 * INFO: [collection], [remake]
+				 */
+				if (film.data.filetype != "mp4") {
+					html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">' + film.data.filetype + '</div></div>';
+				}
+				if (!film.data.types && film.data.filetype == "mp4") {
+					html += '<div class="bookmark"><i class="icon-bookmark hd"></i><div class="text-bookmark near-light">HD</div></div>';
+				}
+				if (film.data.types) {
+					$.each(film.data.types, function(key, type) {
+						switch(type)
+						{
+							//info
+							case "collection":
+								html += '<div class="bookmark"><i class="icon-bookmark info"></i><div class="text-bookmark dark">CL</div></div>';
+								break;
+							case "remake":
+								html += '<div class="bookmark"><i class="icon-bookmark info"></i><div class="text-bookmark dark">RM</div></div>';
+								break;
+							//notice
+							case "lowres":
+								html += '<div class="bookmark"><i class="icon-bookmark notice"></i><div class="text-bookmark dark">LR</div></div>';
+								break;
+							case "screener":
+								html += '<div class="bookmark"><i class="icon-bookmark notice"></i><div class="text-bookmark dark">SC</div></div>';
+								break;
+							//warning
+							case "nodub":
+								html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">DU</div></div>';
+								break;
+							case "nosub":
+								html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">SU</div></div>';
+								break;
+						}
+					});
+				}
+	
+				html += '</li>';
+				target.append(html);
 			}
-
-			html += '</li>';
-			target.append(html);
 		}
 		app.model.film_id = '';
 		var images = $('img');
@@ -356,7 +377,7 @@
 			else
 				html += '<a href="javascript:void(0);" class="small awesome page-button" data-id="'+i+'">'+(i+1)+'</a>';
 		};
-		$('#head .menu').append(html);
+		$('#menu .paging').append(html);
 		$(document).on('click', '.page-button', on_click_page);
 	}
 	
@@ -389,7 +410,7 @@
 	// fill the last row on a page with maximum amount of films
 	function fill_last_row()
 	{
-		
+		//
 	}
 	
 	// check if an item is a collection
@@ -431,28 +452,29 @@
 	}
 	
 	// animate header menu
-	function set_header_menu()
+	function set_menu()
 	{
+		var menu = $('#menu');
 		if(app.model.scroll_top > 50)
 		{
-			$('#head').css( 
+			menu.css( 
 			{
-				'top': (app.model.scroll_top-80)+'px', '-webkit-transition': 'none', '-moz-transition': 'none', '-o-transition': 'none', 'transition': 'none'
+				'top': (app.model.scroll_top-80)+'px', '-webkit-transition': 'none','-moz-transition': 'none','-o-transition':'none', 'transition':'none'
 			});
 			clearInterval(app.model.scroll_interval);
 			app.model.scroll_interval = setInterval(function() 
 			{ 
-				$('#head').css( 
+				menu.css( 
 				{
-					'top': app.model.scroll_top+'px', '-webkit-transition': 'all 0.3s ease-out', '-moz-transition': 'all 0.3s ease-out', '-o-transition': 'all 0.3s ease-out', 'transition': 'all 0.3s ease-out'
+					'top': (app.model.scroll_top-5)+'px', '-webkit-transition':'all 0.3s ease-out', '-moz-transition': 'all 0.3s ease-out', '-o-transition':'all 0.3s ease-out', 'transition':'all 0.3s ease-out'
 				});
 			}, 900);
 		}
 		else
 		{
-			$('#head').css( 
+			menu.css( 
 			{
-				'top': app.model.scroll_top+'px', '-webkit-transition': 'all 0.3s', '-moz-transition': 'all 0.3s', '-o-transition': 'all 0.3s', 'transition': 'all 0.3s'
+				'top':(app.model.scroll_top-5)+'px', '-webkit-transition':'all 0.3s', '-moz-transition':'all 0.3s', '-o-transition':'all 0.3s', 'transition':'all 0.3s'
 			});
 		}
 	}

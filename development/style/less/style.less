@@ -8,18 +8,18 @@
 //Custom
 @color-brand : #1d8fd5;
 // Awesome
-@color-asesome-green : #91bd09;
-@color-asesome-green-dark : #749a02;
-@color-asesome-blue : #2daebf;
-@color-asesome-blue-dark : #007d9a;
-@color-asesome-red : #e33100;
-@color-asesome-red-dark : #872300;
-@color-asesome-magenta : #a9014b;
-@color-asesome-magenta-dark : #630030;
-@color-asesome-orange : #ff5c00;
-@color-asesome-orange-dark : #d45500;
-@color-asesome-yellow : #ffb515;
-@color-asesome-yellow-dark : #fc9200;
+@color-awesome-green : #91bd09;
+@color-awesome-green-dark : #749a02;
+@color-awesome-blue : #2daebf;
+@color-awesome-blue-dark : #007d9a;
+@color-awesome-red : #e33100;
+@color-awesome-red-dark : #872300;
+@color-awesome-magenta : #a9014b;
+@color-awesome-magenta-dark : #630030;
+@color-awesome-orange : #ff5c00;
+@color-awesome-orange-dark : #d45500;
+@color-awesome-yellow : #ffb515;
+@color-awesome-yellow-dark : #fc9200;
 // Kelly
 @color-kelly-vivid-yellow : #FFB300;
 @color-kelly-strong-purple : #803E75;
@@ -254,32 +254,35 @@ body
 
 /* VIEW: FILMS */
 
-// search
-
-#head
+// menu
+#menu
 {
   position:relative;
-  display:block;
+  display:block; 
   z-index:10;
-  margin: -5px 0 0 0;
   background-color : @color-grey-dark;
   width:100%;
   height:80px;
-  .menu
+  .paging
   {
     margin: -57px 0 0 0;
     .logout-button 
     {
       float: right;
+      margin: 0 3px 0 0;
     }
     .page-button
     {
       float:right;
       margin: 0 3px 0 0;
     }
+    .suggest-button 
+    {
+      float: right;
+      margin: 0 3px 0 0;
+    }
   }
 }
-
 #loader-small
 {
   position:relative;
@@ -289,11 +292,10 @@ body
   width:20px;
   height:20px; 
 }
-
 #search
 {
   margin:0px auto;
-  width:200px;
+  width:230px;
   height:80px;
 }
 #search input[type="text"] 
@@ -534,21 +536,22 @@ li:hover
 .awesome:active                                                         { top: 1px; background-color: @color-kelly-vivid-yellowish-green; color: @color-grey-near-dark; }
 .small.awesome, .small.awesome:visited                                  { font-size: 10px; padding: ; }
 .small.awesome.active                                                   { background-color: @color-kelly-vivid-yellowish-green; color: @color-grey-near-dark; }
+.small.awesome.blue                                                     { color: @color-grey-near-dark; }
 
 .awesome, .awesome:visited, .medium.awesome, .medium.awesome:visited    { font-size: 13px; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); }
 .large.awesome, .large.awesome:visited                                  { font-size: 14px; padding: 8px 14px 9px; }
-.green.awesome, .green.awesome:visited                                  { background-color: @color-asesome-green; }
-.green.awesome:hover                                                    { background-color: @color-asesome-green-dark; }
-.blue.awesome, .blue.awesome:visited                                    { background-color: @color-asesome-blue; }
-.blue.awesome:hover                                                     { background-color: @color-asesome-blue-dark; }
-.red.awesome, .red.awesome:visited                                      { background-color: @color-asesome-red; }
-.red.awesome:hover                                                      { background-color: @color-asesome-red-dark; }
-.magenta.awesome, .magenta.awesome:visited                              { background-color: @color-asesome-magenta; }
-.magenta.awesome:hover                                                  { background-color: @color-asesome-magenta-dark; }
-.orange.awesome, .orange.awesome:visited                                { background-color: @color-asesome-orange; }
-.orange.awesome:hover                                                   { background-color: @color-asesome-orange-dark; }
-.yellow.awesome, .yellow.awesome:visited                                { background-color: @color-asesome-yellow; }
-.yellow.awesome:hover                                                   { background-color: @color-asesome-yellow-dark; }
+.green.awesome, .green.awesome:visited                                  { background-color: @color-awesome-green; }
+.green.awesome:hover                                                    { background-color: @color-awesome-green-dark; }
+.blue.awesome, .blue.awesome:visited                                    { background-color: @color-awesome-blue; }
+.blue.awesome:hover                                                     { background-color: @color-awesome-blue-dark; }
+.red.awesome, .red.awesome:visited                                      { background-color: @color-awesome-red; }
+.red.awesome:hover                                                      { background-color: @color-awesome-red-dark; }
+.magenta.awesome, .magenta.awesome:visited                              { background-color: @color-awesome-magenta; }
+.magenta.awesome:hover                                                  { background-color: @color-awesome-magenta-dark; }
+.orange.awesome, .orange.awesome:visited                                { background-color: @color-awesome-orange; }
+.orange.awesome:hover                                                   { background-color: @color-awesome-orange-dark; }
+.yellow.awesome, .yellow.awesome:visited                                { background-color: @color-awesome-yellow; }
+.yellow.awesome:hover                                                   { background-color: @color-awesome-yellow-dark; }
 
 // shadowed background
 .shadowed-background {
