@@ -144,8 +144,7 @@ $.extend(Controller.prototype,
 		var cache = false;
 		var data =
 		{
-			view : view + '_view',
-			module : view
+			view : view + '_view'
 		};
 
 		return this.execute(url, type, dataType, cache, data, method);

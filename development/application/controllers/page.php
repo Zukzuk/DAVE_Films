@@ -32,21 +32,16 @@ class Page extends CI_Controller
     {
     	if(!$this->testing) {
 			$view = $this->input->post('view');
-			$injected_module = $this->input->post('module');
 		}else{
 			$view = $this->input->get('view');
-			$injected_module = $this->input->get('module');
-
 		}
+		$data = array();
 		
 		// get extra data to be parsed in the view
 		if($view == 'some_view')
 		{
 			$data['some_data'] = $this->get_some_data();
 		}
-
-		// add javascript module
-		$data['injected_module'] = $injected_module;
 		
 		$html = $this->load->view($view, $data, TRUE);
 		$this->common->html_response($html);

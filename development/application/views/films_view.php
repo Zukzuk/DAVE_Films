@@ -14,4 +14,3 @@
 <section id="player">
 	<video controls autoplay poster autobuffer preload="auto" name="media"></video>
 </section>
-<!-- <script type="text/javascript" src="js/modules/<?php echo $injected_module; ?>.js"></script> -->
