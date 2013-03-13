@@ -46,29 +46,11 @@ $.extend(Events.prototype,
 	 */
 	dispatch : function(type, data)
 	{
-		if (type == "NAVIGATE")
-		{
-			console.log("app event :: " + type + " " + data.uri);
-		}
-		else
-		if (type == "LOAD_VIEW")
-		{
-			console.log("app event :: " + type + " " + data.view + "_view.php");
-		}
-		else
-		if (type == "ADD_VIEW")
-		{
-			console.log("view event :: " + type + " " + data.view);
-		}
-		else
-		if (type == "UPDATE_HTML")
-		{
-			console.log("view event :: " + type + " " + data.update);
-		}
-		else
-		{
-			console.log("app event :: " + type);
-		}
+		if (type == "NAVIGATE") { console.log("app event :: " + type + " " + data.uri); }
+		else if (type == "LOAD_VIEW") { console.log("app event :: " + type + " " + data.view + "_view.php"); }
+		else if (type == "ADD_VIEW") { console.log("view event :: " + type + " " + data.view); }
+		else if (type == "UPDATE_HTML") { console.log("view event :: " + type + " " + data.update); }
+		else { console.log("app event :: " + type); }
 
 		switch(type)
 		{
@@ -125,8 +107,7 @@ $.extend(Events.prototype,
 			// default
 
 			default:
-				if (app.model.environment != 'production')
-					alert("event dispatcher :: '" + type + "' does not exist in js/app.events.js");
+				if (app.model.environment != 'production') alert("event dispatcher :: '" + type + "' does not exist in js/app.events.js");
 				break;
 		}
 

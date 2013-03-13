@@ -118,10 +118,28 @@ $.extend(Data.prototype,
 		var type = 'POST';
 		var dataType = "json";
 		var cache = false;
+		var data = {};
+
+		return this.execute(url, type, dataType, cache, data, method);
+	},
+	
+	/**
+	 * synchronize films with database
+	 *
+	 */
+	synchronize_films : function(_films)
+	{
+		var method = 'synchronize_films';
+		var url = app.model.base_url + "secureddata/" + method;
+
+		var type = 'POST';
+		var dataType = "json";
+		var cache = false;
 		var data =
 		{
+			films:_films
 		};
-
+		
 		return this.execute(url, type, dataType, cache, data, method);
 	},
 
@@ -179,9 +197,7 @@ $.extend(Data.prototype,
 		var type = 'GET';
 		var dataType = "json";
 		var cache = false;
-		var data =
-		{
-		};
+		var data = {};
 
 		return this.execute(url, type, dataType, cache, data, method);
 

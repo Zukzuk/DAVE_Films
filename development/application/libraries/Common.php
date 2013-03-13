@@ -6,7 +6,6 @@ class Common
     {
     	// set error
     	$response['error'] = FALSE;
-		
 		// parse message
 		$response['msg'] = '*** Missing mandatory parameter(s) : ';
 		foreach ($mandatory as $key => $value) 

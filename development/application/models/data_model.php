@@ -48,7 +48,10 @@ class Data_model extends CI_Model
 			$directory = $directories[$key];
 			$dir_name = str_replace("F:/", "", $directory);
 
-			if ($dir_name != "System Volume Information" && $dir_name != "FFOutput" && substr($dir_name, 1) != "RECYCLE.BIN")
+			if ($dir_name != "System Volume Information" && 
+				$dir_name != "FFOutput" && 
+				$dir_name != "HandBrake Output" && 
+				substr($dir_name, 1) != "RECYCLE.BIN")
 			{
 				$payload[$count]['name'] = "";
 				$payload[$count]['year'] = "";
@@ -60,6 +63,7 @@ class Data_model extends CI_Model
 				$payload[$count]['data']['filetype'] = "";
 				$payload[$count]['data']['subtitle'] = FALSE;
 				$payload[$count]['data']['poster'] = FALSE;
+				$payload[$count]['data']['count'] = 0;
 
 				// get name
 				$payload[$count]['name'] = $this -> helper_get_name_from_dirname($dir_name);
@@ -80,14 +84,14 @@ class Data_model extends CI_Model
 				$contents = scandir($directory);
 				foreach ($contents as $_key => $content)
 				{
-					if ($content === '.' or $content === '..')
-						continue;
+					if ($content === '.' or $content === '..') continue;
 
 					$result = $this -> helper_get_film_by_filetype($content);
 					if ($result)
 					{
 						$payload[$count]['data']['filename'] = $result['filename'];
 						$payload[$count]['data']['filetype'] = $result['filetype'];
+						$payload[$count]['data']['count'] ++;
 					}
 
 					$result = $this -> helper_get_subtitle_by_filetype($content);
@@ -158,35 +162,32 @@ class Data_model extends CI_Model
 
 				// DEPRECATED! NO MORE SUBDIRS!
 				/**
-				 *
-				 *
 				 $sub_dirs = $this->helper_check_for_subdirectories($contents);
 				 if(!$sub_dirs)
 				 {
-				 // entries in root, without subfolders
-				 $entries = $this->helper_get_films_from_directory($contents);
-
-				 // normalize collection array
-				 $entries = array_values($entries);
-				 $payload['data']['entries'] = $entries;
+					 // entries in root, without subfolders
+					 $entries = $this->helper_get_films_from_directory($contents);
+	
+					 // normalize collection array
+					 $entries = array_values($entries);
+					 $payload['data']['entries'] = $entries;
 				 }
 				 else
 				 {
-				 // entries in subfolder(s)
-				 foreach ($sub_dirs as $key => $sub_dir)
-				 {
-				 if($sub_dir === '.' or $sub_dir === '..') continue;
-
-				 $contents = scandir($directory.'/'.$sub_dir);
-				 $entries = $this->helper_get_films_from_directory($contents);
-				 //die(print_r($entries));
-
-				 // normalize collection array
-				 $entries = array_values($entries);
-				 $payload['data'][strtolower(str_replace(' ', '', $sub_dir))] = $entries;
+					 // entries in subfolder(s)
+					 foreach ($sub_dirs as $key => $sub_dir)
+					 {
+						 if($sub_dir === '.' or $sub_dir === '..') continue;
+		
+						 $contents = scandir($directory.'/'.$sub_dir);
+						 $entries = $this->helper_get_films_from_directory($contents);
+						 //die(print_r($entries));
+		
+						 // normalize collection array
+						 $entries = array_values($entries);
+						 $payload['data'][strtolower(str_replace(' ', '', $sub_dir))] = $entries;
+					 }
 				 }
-				 }
-				 *
 				 */
 
 				$response['msg'] = 'Successfully fetched all collection entries.';
@@ -221,6 +222,57 @@ class Data_model extends CI_Model
 		$response['msg'] = 'Successfully written php for iframe insertion.';
 		$response['player_uri'] = $file;
 
+		return $response;
+	}
+
+	public function synchronize_films($_parameters)
+	{
+		$response['error'] = FALSE;
+		$response['session'] = TRUE;
+		$films = $_parameters['films'];
+		
+		// Prepare query statement
+		$check_sync = $this->pdo->prepare('SELECT * FROM films WHERE name=:name AND year=:year');
+		$sync_film = $this->pdo->prepare('INSERT INTO films (name,year) VALUES(:name, :year)');
+		
+		foreach ($films as $key => $film) 
+		{
+			// Check if film needs to be synced			
+			try
+			{	
+				$check_sync->execute(array(':name' => $film['name'], ':year' => $film['year']));
+				$synced = $check_sync->fetchAll();
+				$check_sync->closeCursor();
+			}
+			catch(PDOException $e)
+			{
+				$response[$film['name']]['error'] = TRUE;
+				$response[$film['name']]['msg'] = 'Error executing check_sync: ' . $e->getMessage();
+			}
+			
+			// Sync the film if needed
+			if(!count($synced))
+			{
+				try
+				{	
+					$sync_film->execute(array(':name' => $film['name'], ':year' => $film['year'] ));
+					$sync_film->closeCursor();
+				}
+				catch(PDOException $e)
+				{
+					$response[$film['name']]['error'] = TRUE;
+					$response[$film['name']]['msg'] = 'Error executing sync_film: ' . $e->getMessage();
+				}
+
+				$response[$film['name']]['msg'] = 'Film synced';	
+				$response['msg'] = 'Some films were synced';	
+			}
+			else 
+			{
+				$response['msg'] = 'No films to sync';	
+			}
+		}
+		
 		return $response;
 	}
 
@@ -361,8 +413,7 @@ class Data_model extends CI_Model
 			$_result = $this -> helper_get_film_by_filetype($content);
 			if ($_result)
 			{
-				if (!$result)
-					$result = array();
+				if (!$result) $result = array();
 				array_push($result, $_result);
 			}
 		}

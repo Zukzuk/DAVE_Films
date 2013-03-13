@@ -366,11 +366,11 @@ $.extend(Model.prototype,
 		return false;
 	},
 
-	setup_device : function()
+	setup_device : function(device_change)
 	{
 		this.window_size = [$(window).width()-100, $(window).height()-100];
-		var device_change = false;
-
+		 if (typeof device_change == 'undefined') device_change = false;
+		
 		if (this.window_size[0] <= this.device.mobile_small && this.device.type != 'mobile_small')
 		{
 			$('body').removeClass(this.device.type).addClass('mobile_small');
@@ -429,8 +429,12 @@ $.extend(Model.prototype,
 
 		if (device_change)
 		{
-			$('#large-film').removeClass('left');
-			$('#large-film:nth-child('+this.films_per_row+'n)').addClass('left');
+			var film_list = $('#films li');
+			film_list.removeClass('left');
+			for (var i = 0; i < film_list.length; i++) 
+			{
+				if(!(i%this.films_per_row)) $(film_list[i]).addClass('left');
+			};
 			console.log("device.type : " + this.device.type + " | size : " + this.window_size[0] + "/" + this.window_size[1]);
 			return true;
 		}

@@ -14,11 +14,11 @@
 		if (app.model.responsive)
 		{
 			var device_changed = app.model.setup_device();
-			//if(device_changed) player_resize();
+			if(device_changed) player_resize();
 			$(window).resize(function()
 			{
 				device_changed = app.model.setup_device();
-				//if(device_changed) player_resize();
+				if(device_changed) player_resize();
 			});
 		}
 		
@@ -36,9 +36,6 @@
 			set_menu();
 		});
 		
-		// remove some deprecated stuff
-		$('#player').hide();
-		
 		// add functionality to search bar
 		$('#search').submit(function()
 		{
@@ -53,6 +50,8 @@
 			app.model.films_json = response;
 			set_paging();
 			parse_films();
+			app.model.setup_device(true);			
+			synchronize_films();
 		});
 		
 		// add event listeners
@@ -90,6 +89,7 @@
 		$('.wrapper').animate( { scrollTop : 0 }, 0);
 		set_menu();
 		parse_films();
+		app.model.setup_device(true);
 	}
 	
 	// handle click to play events
@@ -118,7 +118,7 @@
 		{
 			//console.log(data);
 			var entries = response.payload.data.entries;
-			target.append('<div class="collection-menu"><div class="inner-menu"><ul></ul></div></div>');
+			target.append('<div class="collection-menu"><h2>'+response.payload.name+'</h2><div class="inner-menu"><ul></ul></div></div>');
 			menu = target.find('.collection-menu');
 			menu.animate({opacity:0},0).animate({opacity:1},400);
 			menu.find('ul').animate({opacity:0},0);
@@ -134,7 +134,8 @@
 	function on_rollout_collection(event)
 	{
 		var target = $(event.currentTarget).parent();
-		target.find('.collection-menu').animate({opacity:0},300, function(){
+		target.find('.collection-menu').animate({opacity:0},300, function()
+		{
 			this.remove();
 		});
 	}
@@ -262,13 +263,13 @@
 		
 		var target = $('#films ul');
 		target.empty();
-		for(var i = start_item; i < end_item+1; i++)
+		for(var i = start_item; i < end_item; i++)
 		{
 			app.model.film_id = i;
 			var film = app.model.films_json.payload[i];
 			html = '';
 			
-			if(film || !film)
+			if(film)
 			{
 				// Add alphabet tiles
 				if (!i)	html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';
@@ -320,6 +321,9 @@
 				 */
 				if (film.data.filetype != "mp4") {
 					html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">' + film.data.filetype + '</div></div>';
+				}
+				if (film.data.count > 1 && !check_for_collection(film)) {
+					html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">2X</div></div>';
 				}
 				if (!film.data.types && film.data.filetype == "mp4") {
 					html += '<div class="bookmark"><i class="icon-bookmark hd"></i><div class="text-bookmark near-light">HD</div></div>';
@@ -405,6 +409,32 @@
 		}
 
 		return html;
+	}
+	
+	function synchronize_films()
+	{
+		var batch_length = 50;
+		var film_batch = [];
+		var film_batches = [];
+		for (var i = 0; i < app.model.films_json.payload.length; i++) 
+		{
+			if(!(i%batch_length) && i) 
+			{
+				//console.log(i);
+				film_batches.push(film_batch);
+				film_batch = [];
+			}
+			film_batch.push(app.model.films_json.payload[i]);
+		};
+		film_batches.push(film_batch);
+		
+		$.each(film_batches, function(key, film_batch) 
+		{
+			app.data.synchronize_films(film_batch).success(function(response)
+			{
+				console.log(response);
+			});
+		}); 
 	}
 	
 	// fill the last row on a page with maximum amount of films

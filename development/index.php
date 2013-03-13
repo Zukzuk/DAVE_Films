@@ -18,7 +18,7 @@
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
- 	define('APP_VERSION', '0.0.1 Alpha');
+ 	define('APP_VERSION', '1.0.0 Alpha');
 	define('ENVIRONMENT', 'development');
 /*
  *---------------------------------------------------------------

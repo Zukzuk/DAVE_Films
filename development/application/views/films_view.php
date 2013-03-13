@@ -5,12 +5,12 @@
 	</form>
 	<div class="paging">
 		<a href="javascript:void(0);" class="small awesome logout-button" onclick="app.events.dispatch('DO_LOGOUT'); return false;">Logout</a>
-		<a href="javascript:void(0);" class="small blue awesome suggest-button">...</a>
+		<a href="javascript:void(0);" class="small yellow awesome suggest-button">...</a>
 	</div>
 </section>
 <section id="films">
 	<ul></ul>
 </section>
-<section id="player">
+<section id="player" class="hidden">
 	<video controls autoplay poster autobuffer preload="auto" name="media"></video>
 </section>

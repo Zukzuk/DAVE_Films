@@ -259,7 +259,7 @@ body
 {
   position:relative;
   display:block; 
-  z-index:10;
+  z-index:100;
   background-color : @color-grey-dark;
   width:100%;
   height:80px;
@@ -490,20 +490,26 @@ li:hover
   width:297px;
   height:208px;
   overflow:hidden;
-  //background:rgba(30,30,30,0.8);
+  z-index:10;
   background:@color-grey-near-dark; 
-  &.left
+  h2
   {
-    left:0px; 
+    padding: 10px 0 0 0; 
+    color: @color-grey-mid; 
+    text-decoration: none;  
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+    text-align:center;
+    font-weight:bold;
+    font-size:13px;
   }
   .inner-menu
   {
     position:absolute;
     display:block;
-    top:10px;
+    top:30px;
     left:0;
     width:285px;
-    height:190px;
+    height:170px;
     overflow-y: scroll;
     li
     {
@@ -514,6 +520,10 @@ li:hover
         width:225px;
     }
   }
+}
+#films .left .collection-menu
+{
+  left:3px;
 }
 
 //buttons
@@ -536,8 +546,8 @@ li:hover
 .awesome:active                                                         { top: 1px; background-color: @color-kelly-vivid-yellowish-green; color: @color-grey-near-dark; }
 .small.awesome, .small.awesome:visited                                  { font-size: 10px; padding: ; }
 .small.awesome.active                                                   { background-color: @color-kelly-vivid-yellowish-green; color: @color-grey-near-dark; }
-.small.awesome.blue                                                     { color: @color-grey-near-dark; }
-
+.small.awesome.yellow                                                   { color: @color-grey-near-dark; }
+ 
 .awesome, .awesome:visited, .medium.awesome, .medium.awesome:visited    { font-size: 13px; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); }
 .large.awesome, .large.awesome:visited                                  { font-size: 14px; padding: 8px 14px 9px; }
 .green.awesome, .green.awesome:visited                                  { background-color: @color-awesome-green; }

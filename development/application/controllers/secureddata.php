@@ -78,6 +78,13 @@ class Secureddata extends CI_Controller
 		$this->execute(__FUNCTION__, $mandatory, $optional);
 	}
 	
+	public function synchronize_films()
+	{
+		$mandatory = array('films');
+		$optional = array();
+		$this->execute(__FUNCTION__, $mandatory, $optional);
+	}
+	
 	public function get_collection()
 	{
 		$mandatory = array('directory');

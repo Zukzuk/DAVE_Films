@@ -67,11 +67,10 @@ $.extend(CustomApplication.prototype,
 		$.address.externalChange(function(deeplink)
 		{
 			//console.app('Address externalChange :: '+deeplink.path);
-			app.model.external_uri_change(
-			{
-				uri : deeplink.path
-			});
-		}), $.address.change(function(deeplink)
+			app.model.external_uri_change( { uri : deeplink.path });
+		});
+		
+		$.address.change(function(deeplink)
 		{
 			//console.app('app.js $.address.change:', deeplink);
 			app.model.setup_routing(deeplink);
@@ -80,10 +79,7 @@ $.extend(CustomApplication.prototype,
 			if (app.model.routing.type == '')
 			{
 				// if root url, redirect to landing "page"
-				app.events.dispatch('NAVIGATE',
-				{
-					uri : app.model.landing_page
-				});
+				app.events.dispatch('NAVIGATE', { uri : app.model.landing_page });
 			}
 
 			// user wants to load a "page"
@@ -159,7 +155,7 @@ $.extend(CustomApplication.prototype,
 					else
 					{
 						// user is logged in, normal routing applies
-						console.log('routing :: user is logged in, save publicly available data to the model');
+						console.log('routing :: user is logged in, save publically available data to the model.');
 						app.model.firstname = response.firstname;
 						app.model.lastname = response.lastname;
 
