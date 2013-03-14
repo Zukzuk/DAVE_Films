@@ -14,9 +14,9 @@ class Data_model extends CI_Model
 		$this -> pdo -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 
-	///////////////
-	// GLOBAL
-	///////////////
+///////////////
+// GLOBAL
+///////////////
 
 	public function get_user_privileges($_parameters)
 	{
@@ -31,9 +31,9 @@ class Data_model extends CI_Model
 		return $response;
 	}
 
-	///////////////
-	// PROJECT_REPORTS MODULE
-	///////////////
+///////////////
+// PROJECT_REPORTS MODULE
+///////////////
 
 	public function get_all_films($_parameters)
 	{
@@ -229,57 +229,118 @@ class Data_model extends CI_Model
 	{
 		$response['error'] = FALSE;
 		$response['session'] = TRUE;
+		
+		$response['synced'] = FALSE;
 		$films = $_parameters['films'];
 		
 		// Prepare query statement
-		$check_sync = $this->pdo->prepare('SELECT * FROM films WHERE name=:name AND year=:year');
-		$sync_film = $this->pdo->prepare('INSERT INTO films (name,year) VALUES(:name, :year)');
+		$check_films = $this->pdo->prepare('SELECT * FROM films');		
+		$check_film = $this->pdo->prepare('SELECT * FROM films WHERE name=:name AND year=:year');
+		$add_film = $this->pdo->prepare('INSERT INTO films (name,year) VALUES(:name, :year)');
+		$update_film = $this->pdo->prepare('UPDATE films SET active=:active WHERE name=:name AND year=:year');
 		
+		$film_names = array();
 		foreach ($films as $key => $film) 
 		{
 			// Check if film needs to be synced			
-			try
-			{	
-				$check_sync->execute(array(':name' => $film['name'], ':year' => $film['year']));
-				$synced = $check_sync->fetchAll();
-				$check_sync->closeCursor();
+			try {	
+				$check_film->execute(array(':name' => $film['name'], ':year' => $film['year']));
+				$synced = $check_film->fetchAll();
+				$check_film->closeCursor();
 			}
-			catch(PDOException $e)
-			{
+			catch(PDOException $e) {
 				$response[$film['name']]['error'] = TRUE;
 				$response[$film['name']]['msg'] = 'Error executing check_sync: ' . $e->getMessage();
 			}
 			
-			// Sync the film if needed
+			// Double sync target found, not good!
+			if(count($synced) > 1) {
+				$response[$film['name']]['error'] = TRUE;
+				$response[$film['name']]['msg'] = 'Double sync target found : '.print_r($synced);
+			}
+			$current_synced = current($synced);
+			
+			// add film to db
 			if(!count($synced))
 			{
-				try
-				{	
-					$sync_film->execute(array(':name' => $film['name'], ':year' => $film['year'] ));
-					$sync_film->closeCursor();
+				// add film to db
+				try {	
+					$add_film->execute(array(':name' => $film['name'], ':year' => $film['year']));
+					$add_film->closeCursor();
 				}
-				catch(PDOException $e)
-				{
+				catch(PDOException $e) {
 					$response[$film['name']]['error'] = TRUE;
-					$response[$film['name']]['msg'] = 'Error executing sync_film: ' . $e->getMessage();
+					$response[$film['name']]['msg'] = 'Error executing add_film: ' . $e->getMessage();
 				}
-
-				$response[$film['name']]['msg'] = 'Film synced';	
-				$response['msg'] = 'Some films were synced';	
+				$response[$film['name']]['msg'] = 'Film added';
+				$response['synced'] = TRUE;
 			}
-			else 
+			// activate old film in db
+			else if(count($synced) == 1 && !$current_synced['active'])
 			{
-				$response['msg'] = 'No films to sync';	
+				try {	
+					$update_film->execute(array(':active' => 1, ':name' => $film['name'], ':year' => $film['year']));
+					$update_film->closeCursor();
+				}
+				catch(PDOException $e) {
+					$response[$film['name']]['error'] = TRUE;
+					$response[$film['name']]['msg'] = 'Error executing update_film: ' . $e->getMessage();
+				}				
+				$response[$film['name']]['msg'] = 'Film activated';
+				$response['synced'] = TRUE;	
 			}
+			
+			/**
+			 * Get all films
+			 *
+			array_push($film_names, array('name' => $film['name'], 'year' => $film['year']) );
+			 * 
+			 */
 		}
+
+		/**
+		 * Get all db films
+		 * 
+		$check_films->execute(array());
+		$db_films = $check_films->fetchAll();
+		$check_films->closeCursor();
+		$db_film_names = array();
+		foreach ($db_films as $key => $db_film) {			
+			array_push($db_film_names, array('name' => $db_film['name'], 'year' => $db_film['year']) );
+		}
+		
+		// deactivate film in db
+		$deactivate_films = $this->array_recursive_diff($film_names, $db_film_names);
+		die(print_r($deactivate_films));
+		
+		foreach ($deactivate_films as $key => $db_film)
+		{
+			try {
+				$update_film->execute(array(':active' => 0, ':name' => $db_film['name'], ':year' => $db_film['year']));
+				$update_film->closeCursor();
+			}
+			catch(PDOException $e) {
+				$response[$db_film['name']]['error'] = TRUE;
+				$response[$db_film['name']]['msg'] = 'Error executing update_film: ' . $e->getMessage();
+			}
+			$response[$db_film['name']]['msg'] = 'Film deactivated';
+			$response['synced'] = TRUE;
+		}
+		 * 
+		 */
+	
+		if($response['synced'])
+			$response['msg'] = 'Some films were synced.';
+		else 
+			$response['msg'] = 'No films to sync.';	
 		
 		return $response;
 	}
 
 	
-	///////////////
-	// PRIVATE METHODS
-	///////////////
+///////////////
+// PRIVATE METHODS
+///////////////
 	
 
 	private function helper_get_name_from_dirname($dir_name)
@@ -342,7 +403,13 @@ class Data_model extends CI_Model
 	{
 		$result = FALSE;
 		$filetype = strtolower(substr($file, -3));
-		if ($filetype == 'mp4' || $filetype == 'mkv' || $filetype == 'm4v' || $filetype == 'mov' || $filetype == 'avi' || $filetype == 'mpg' || $filetype == 'wmv')
+		if ($filetype == 'mp4' || 
+			$filetype == 'mkv' || 
+			$filetype == 'm4v' || 
+			$filetype == 'mov' || 
+			$filetype == 'avi' || 
+			$filetype == 'mpg' || 
+			$filetype == 'wmv')
 		{
 			$result['filename'] = $file;
 			$result['filetype'] = $filetype;
@@ -386,16 +453,14 @@ class Data_model extends CI_Model
 		$result = FALSE;
 		foreach ($contents as $key => $content)
 		{
-			if ($content === '.' or $content === '..')
-				continue;
+			if ($content === '.' or $content === '..') continue;
 
-			// TODO: check for real dirs! glob () and is_dir somehow don't detect subdirs...
+			// TODO: check for real dirs! glob() and is_dir somehow don't detect subdirs...
 			$check1 = strtolower(substr($content, -3, 1));
 			$check2 = strtolower(substr($content, -4, 1));
 			if ($check1 != '.' && $check2 != '.')
 			{
-				if (!$result)
-					$result = array();
+				if (!$result) $result = array();
 				array_push($result, $content);
 			}
 		}
@@ -407,8 +472,7 @@ class Data_model extends CI_Model
 		$result = FALSE;
 		foreach ($contents as $key => $content)
 		{
-			if ($content === '.' or $content === '..')
-				continue;
+			if ($content === '.' or $content === '..') continue;
 
 			$_result = $this -> helper_get_film_by_filetype($content);
 			if ($_result)
@@ -419,5 +483,30 @@ class Data_model extends CI_Model
 		}
 		return $result;
 	}
+	
+	private function array_recursive_diff($aArray1, $aArray2) 
+	{
+		$aReturn = array();	
+		foreach ($aArray1 as $mKey => $mValue) {
+			if (array_key_exists($mKey, $aArray2)) {
+				if (is_array($mValue)) {
+					$aRecursiveDiff = $this->array_recursive_diff($mValue, $aArray2[$mKey]);
+					if (count($aRecursiveDiff)) {
+						 $aReturn[$mKey] = $aRecursiveDiff; 
+					}
+				} 
+				else {
+					if ($mValue != $aArray2[$mKey]) {
+						$aReturn[$mKey] = $mValue;
+	        		}
+	      		}
+	    	} 
+	    	else {
+	      		$aReturn[$mKey] = $mValue;
+	    	}
+	  }
+	  return $aReturn;
+	}
+	
 }
 ?>

@@ -309,7 +309,7 @@
 					// add search suggection
 					html += '<div class="google-search">' + 
 							film.name + " " + film.year + "<br />" + 
-							'<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >Google filmposter >></a>' + 
+							'<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >Filmposter...</a>' + 
 						'</div>';
 				}
 	
@@ -532,7 +532,7 @@
 		
 			case 'wide':
 				$('#player video').attr('width', '1280').attr('height', '720'); // HD 720
-				 reak;
+				 break;
 		
 			case 'full':
 				$('#player video').attr('width', '1920').attr('height', '1080'); // HD 1080
