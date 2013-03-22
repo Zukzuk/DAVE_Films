@@ -22,13 +22,9 @@ $.extend(Data.prototype,
 	clear : function()
 	{
 		// clear class here
-		this.execute = function()
-		{
-		};
+		this.execute = function() { };
 
-		this.get_user_privileges = function()
-		{
-		};
+		this.get_user_privileges = function() { };
 	},
 
 	setup : function()
@@ -50,11 +46,7 @@ $.extend(Data.prototype,
 				if (!response.session)
 				{
 					console.log(method + " msg :: " + response.msg);
-					if (app.model.environment != 'production')
-					{
-						alert('Session is currupt, the application will now reset.');
-						alert('msg : ' + response.msg);
-					}
+					if (app.model.environment != 'production') alert('Session is no longer valid, you will now be logged out.');
 					app.controller.process_logout().success(function()
 					{						
 						window.location.reload(app.model.base_url);
@@ -73,7 +65,7 @@ $.extend(Data.prototype,
 			{
 				app.model.xhr_pool = $.grep(app.model.xhr_pool, function(value)
 				{
-					return value != xhr
+					return value != xhr;
 				});
 			}
 		});
@@ -84,7 +76,7 @@ $.extend(Data.prototype,
 	///////////////
 
 	/**
-	 * get the user privileges and return json
+	 * Get the user privileges and return json
 	 *
 	 */
 	get_user_privileges : function()
@@ -107,7 +99,7 @@ $.extend(Data.prototype,
 	///////////////
 
 	/**
-	 * get all available film directories
+	 * Get all available film directories
 	 *
 	 */
 	get_all_films : function()
@@ -124,7 +116,7 @@ $.extend(Data.prototype,
 	},
 	
 	/**
-	 * synchronize films with database
+	 * Synchronize films with database
 	 *
 	 */
 	synchronize_films : function(_films)
@@ -144,7 +136,7 @@ $.extend(Data.prototype,
 	},
 
 	/**
-	 * get all available items in a collection
+	 * Get all available items in a collection
 	 *
 	 */
 	get_collection : function(_directory)
@@ -164,7 +156,7 @@ $.extend(Data.prototype,
 	},
 
 	/**
-	 * get film player iframe
+	 * Get film player iframe
 	 * DEPRECATED!
 	 */
 	get_player_iframe : function(_film, _poster)
@@ -185,7 +177,7 @@ $.extend(Data.prototype,
 	},
 
 	/**
-	 * get imdb data for a specific movie
+	 * Get imdb data for a specific movie
 	 * DEPRECATED!
 	 */
 	get_imdb_data : function(_imdb_name, _year)
@@ -200,17 +192,5 @@ $.extend(Data.prototype,
 		var data = {};
 
 		return this.execute(url, type, dataType, cache, data, method);
-
-		/*
-		 * 	Using jQuery.ajax (let jQuery handle the callback)
-		 jQuery.ajax({
-		 url: 'http://sg.media-imdb.com/suggests/f/foo.json',
-		 dataType: 'jsonp',
-		 jsonp: false,
-		 jsonpCallback: 'imdb$foo'
-		 }).done(function (result) {
-		 //
-		 });
-		 */
 	}
 }); 

@@ -231,103 +231,72 @@ class Data_model extends CI_Model
 		$response['session'] = TRUE;
 		
 		$response['synced'] = FALSE;
+		$response['films'] = array();
+		
+		$do_sync = TRUE;
 		$films = $_parameters['films'];
+		$local_film_names = array();
 		
 		// Prepare query statement
 		$check_films = $this->pdo->prepare('SELECT * FROM films');		
 		$check_film = $this->pdo->prepare('SELECT * FROM films WHERE name=:name AND year=:year');
 		$add_film = $this->pdo->prepare('INSERT INTO films (name,year) VALUES(:name, :year)');
-		$update_film = $this->pdo->prepare('UPDATE films SET active=:active WHERE name=:name AND year=:year');
+		$update_film = $this->pdo->prepare('UPDATE films SET active=:active, exists=:exists WHERE name=:name AND year=:year');		
 		
-		$film_names = array();
 		foreach ($films as $key => $film) 
 		{
 			// Check if film needs to be synced			
 			try {	
 				$check_film->execute(array(':name' => $film['name'], ':year' => $film['year']));
-				$synced = $check_film->fetchAll();
+				$do_sync = $check_film->fetchAll();
 				$check_film->closeCursor();
 			}
 			catch(PDOException $e) {
-				$response[$film['name']]['error'] = TRUE;
-				$response[$film['name']]['msg'] = 'Error executing check_sync: ' . $e->getMessage();
+				array_push( $response['films'], array('error'=>TRUE, 'active'=>FALSE, 'msg'=>'Error executing check_sync : '.$e->getMessage(), 'name'=>$film['name'], 'year' => $film['year']) );
 			}
 			
 			// Double sync target found, not good!
-			if(count($synced) > 1) {
-				$response[$film['name']]['error'] = TRUE;
-				$response[$film['name']]['msg'] = 'Double sync target found : '.print_r($synced);
+			if(count($do_sync) > 1) {
+				array_push( $response['films'], array('error'=>TRUE, 'active'=>FALSE, 'msg'=>'Double sync target', 'name'=>$film['name'], 'year' => $film['year']) );
+				$do_sync = FALSE;
 			}
-			$current_synced = current($synced);
-			
-			// add film to db
-			if(!count($synced))
-			{
-				// add film to db
-				try {	
-					$add_film->execute(array(':name' => $film['name'], ':year' => $film['year']));
-					$add_film->closeCursor();
-				}
-				catch(PDOException $e) {
-					$response[$film['name']]['error'] = TRUE;
-					$response[$film['name']]['msg'] = 'Error executing add_film: ' . $e->getMessage();
-				}
-				$response[$film['name']]['msg'] = 'Film added';
-				$response['synced'] = TRUE;
-			}
-			// activate old film in db
-			else if(count($synced) == 1 && !$current_synced['active'])
-			{
-				try {	
-					$update_film->execute(array(':active' => 1, ':name' => $film['name'], ':year' => $film['year']));
-					$update_film->closeCursor();
-				}
-				catch(PDOException $e) {
-					$response[$film['name']]['error'] = TRUE;
-					$response[$film['name']]['msg'] = 'Error executing update_film: ' . $e->getMessage();
-				}				
-				$response[$film['name']]['msg'] = 'Film activated';
-				$response['synced'] = TRUE;	
+			// Year is not a number, not good!
+			if(!intval($film['year'])) {
+				array_push( $response['films'], array('error'=>TRUE, 'active'=>FALSE, 'msg'=>'Year is not a number', 'name'=>$film['name'], 'year' => $film['year']) );
+				$do_sync = FALSE;
 			}
 			
-			/**
-			 * Get all films
-			 *
-			array_push($film_names, array('name' => $film['name'], 'year' => $film['year']) );
-			 * 
-			 */
-		}
+			if($do_sync !== FALSE)
+			{
+				if(!count($do_sync))
+				{
+					// add film to db
+					try {	
+						$add_film->execute(array(':name' => $film['name'], ':year' => $film['year']));
+						$add_film->closeCursor();
+						array_push( $response['films'], array('error'=>FALSE, 'active'=>TRUE, 'msg'=>'Film added', 'name'=>$film['name'], 'year' => $film['year']) );;
+						$response['synced'] = TRUE;
+					}
+					catch(PDOException $e) {
+						array_push( $response['films'], array('error'=>TRUE, 'active'=>FALSE, 'msg'=>'Error executing add_film : '.$e->getMessage(), 'name'=>$film['name'], 'year' => $film['year']) );
+					}				
+				}
+				// activate old film in db
+				else if(count($do_sync) == 1 && !$do_sync[0]['active'])
+				{
+					try {	
+						$update_film->execute(array(':active' => 1, ':name' => $film['name'], ':year' => $film['year']));
+						$update_film->closeCursor();
+						array_push( $response['films'], array('error'=>FALSE, 'active'=>TRUE, 'msg'=>'Film activated', 'name'=>$film['name'], 'year' => $film['year']) );
+						$response['synced'] = TRUE;
+					}
+					catch(PDOException $e) {
+						array_push( $response['films'], array('error'=>TRUE, 'active'=>FALSE, 'msg'=>'Error executing activation with update_film : '.$e->getMessage(), 'name'=>$film['name'], 'year' => $film['year']) );
+					}			
+				}
+			}
 
-		/**
-		 * Get all db films
-		 * 
-		$check_films->execute(array());
-		$db_films = $check_films->fetchAll();
-		$check_films->closeCursor();
-		$db_film_names = array();
-		foreach ($db_films as $key => $db_film) {			
-			array_push($db_film_names, array('name' => $db_film['name'], 'year' => $db_film['year']) );
 		}
-		
-		// deactivate film in db
-		$deactivate_films = $this->array_recursive_diff($film_names, $db_film_names);
-		die(print_r($deactivate_films));
-		
-		foreach ($deactivate_films as $key => $db_film)
-		{
-			try {
-				$update_film->execute(array(':active' => 0, ':name' => $db_film['name'], ':year' => $db_film['year']));
-				$update_film->closeCursor();
-			}
-			catch(PDOException $e) {
-				$response[$db_film['name']]['error'] = TRUE;
-				$response[$db_film['name']]['msg'] = 'Error executing update_film: ' . $e->getMessage();
-			}
-			$response[$db_film['name']]['msg'] = 'Film deactivated';
-			$response['synced'] = TRUE;
-		}
-		 * 
-		 */
 	
 		if($response['synced'])
 			$response['msg'] = 'Some films were synced.';
@@ -336,6 +305,38 @@ class Data_model extends CI_Model
 		
 		return $response;
 	}
+
+/**
+ *
+		array_push($local_film_names, $film['name'].$film['year'] );
+
+		$check_films->execute(array());
+		$db_films = $check_films->fetchAll();
+		$check_films->closeCursor();
+		$db_film_names = array();
+		foreach ($db_films as $key => $db_film) {			
+			array_push($db_film_names, $db_film['name'].$db_film['year'] );
+		}
+		
+		// deactivate film in db
+		$deactivate_films = array_diff($db_film_names, $local_film_names);
+		
+		die(print_r($deactivate_films));
+		
+		foreach ($deactivate_films as $key => $db_film)
+		{
+			try {
+				$update_film->execute(array(':active' => 0, ':name' => substr($db_film, 0, -4), ':year' => substr($db_film, -4) ));
+				$update_film->closeCursor();
+				array_push( $response['films'], array('error'=>FALSE, 'active'=>FALSE, 'msg'=>'Film deactivated', 'name'=>substr($db_film, 0, -4)) );
+				$response['synced'] = TRUE;
+			}
+			catch(PDOException $e) {
+				array_push( $response['films'], array('error'=>TRUE, 'msg'=>'Error executing deactivation with update_film : '.$e->getMessage(), 'name'=>substr($db_film, 0, -4)) );
+			}
+		}
+ * 
+ */
 
 	
 ///////////////

@@ -22,9 +22,7 @@ $.extend(Events.prototype,
 	clear : function()
 	{
 		// clear class here
-		this.dispatch = function()
-		{
-		};
+		this.dispatch = function() { };
 	},
 
 	setup : function()

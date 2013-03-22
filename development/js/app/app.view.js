@@ -9,9 +9,7 @@ View = function()
 
 $.extend(View.prototype,
 {
-	update :
-	{
-	},
+	update : { },
 	main_nav : '',
 	main_nav_html : '',
 	container : '',

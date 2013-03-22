@@ -23,7 +23,7 @@
         
     <link rel="stylesheet" href="style/css/normalize.css">
   	<link rel="stylesheet" href="style/css/style.css">
-  	<link rel="stylesheet" href="style/css/font-awesome.css">
+  	<link rel="stylesheet" href="style/css/font-awesome.min.css">
 
 <!-- Flash -->	
     <script type="text/javascript" id="lib" src="js/libs/swfobject.js"></script>
