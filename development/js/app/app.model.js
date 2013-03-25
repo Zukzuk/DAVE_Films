@@ -39,8 +39,7 @@ $.extend(Model.prototype, {
         view : "",
         filters : { }
     },
-    external_uri_change : function(data) {
-    },
+    external_uri_change : function(data) { },
     current_page : '',
 
     filter_types : ['play', 'id'],
@@ -65,7 +64,7 @@ $.extend(Model.prototype, {
     current_offset : 0,
     num_of_pages : 0,
     films_per_row : 0,
-    films_per_page : 100,
+    films_per_page : 60,
 
     search_offset : 0,
     search_id : 0,
@@ -107,20 +106,13 @@ $.extend(Model.prototype, {
 
     clear : function() {
         // clear class here
-        this.setup_console = function() {
-        };
-        this.setup_routing = function() {
-        };
-        this.toggle_routing_filter = function() {
-        };
-        this.replace_routing_filter = function() {
-        };
-        this.get_routing_uri = function() {
-        };
-        this.setup_device = function() {
-        };
-        this.setup_window = function() {
-        };
+        this.setup_console = function() { };
+        this.setup_routing = function() { };
+        this.toggle_routing_filter = function() { };
+        this.replace_routing_filter = function() { };
+        this.get_routing_uri = function() { };
+        this.setup_device = function() { };
+        this.setup_window = function() { };
     },
 
     setup : function() {
