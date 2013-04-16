@@ -65,14 +65,14 @@ a.play-button{background:url(../../images/ui/play-button.png);}
 a.collection-button{background:url(../../images/ui/collection-button.png);}
 li:hover a.play-button,li:hover a.collection-button{-webkit-opacity:1;-moz-opacity:1;opacity:1;}
 .google-search{position:absolute;display:block;text-align:center;top:30px;width:140px;line-height:30px;font-size:13px;text-shadow:0 -1px 1px rgba(0, 0, 0, 0.25);color:#999999;}.google-search a,.google-search a:link,.google-search a:active,.google-search a:visited{color:#93aa00;}
-.bookmark{position:relative;display:block;width:25px;height:28px;top:-207px;left:-3px;float:left;font-size:7px;}.bookmark .text-bookmark{position:relative;display:block;top:-21px;width:34px;text-align:center;}.bookmark .text-bookmark.dark{color:#333333;}
+.bookmark{position:relative;display:block;width:25px;height:28px;top:-206px;left:-3px;float:left;font-size:7px;}.bookmark .text-bookmark{position:relative;display:block;top:-21px;width:34px;text-align:center;}.bookmark .text-bookmark.dark{color:#333333;}
 .bookmark .text-bookmark.near-light{color:#aaaaaa;}
 .bookmark .text-bookmark.light{color:#cccccc;}
 .bookmark .icon-bookmark{position:relative;display:block;font-size:28px;}.bookmark .icon-bookmark.hd{color:#333333;}
 .bookmark .icon-bookmark.info{color:#93aa00;}
 .bookmark .icon-bookmark.notice{color:#ffb300;}
 .bookmark .icon-bookmark.warning{color:#c10020;}
-.collection-menu,.synced-menu{position:absolute;display:block;top:0px;left:-153px;width:297px;height:208px;overflow:hidden;z-index:10;background:#333333;}.collection-menu h2,.synced-menu h2{padding:10px 0 0 0;color:#999999;text-decoration:none;text-shadow:0 -1px 1px rgba(0, 0, 0, 0.25);text-align:center;font-weight:bold;font-size:13px;}
+.collection-menu,.synced-menu{position:absolute;display:block;top:0px;left:-153px;width:297px;height:208px;overflow:hidden;z-index:10;background:#333333;}.collection-menu h2,.synced-menu h2{padding:10px 0 0 0;color:#999999;text-decoration:none;text-shadow:0 -1px 1px rgba(0, 0, 0, 0.25);text-align:center;font-weight:bold;font-size:12px;}
 .collection-menu .inner-menu,.synced-menu .inner-menu{position:absolute;display:block;top:30px;left:0;width:285px;height:170px;overflow-x:hidden;overflow-y:scroll;}.collection-menu .inner-menu li,.synced-menu .inner-menu li{padding:0px 12px 5px 12px;}
 .collection-menu .inner-menu a,.synced-menu .inner-menu a{width:225px;}
 #films .left .collection-menu{left:3px;}

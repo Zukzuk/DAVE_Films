@@ -446,19 +446,22 @@ class Data_model extends CI_Model
 		$result = FALSE;
 		$filetype = strtolower(substr($file, -3));
 		if ($filetype == 'mp4' || 
-			$filetype == 'mkv' || 
-			$filetype == 'm4v' || 
-			$filetype == 'mov' || 
-			$filetype == 'avi' || 
-			$filetype == 'mpg' || 
-			$filetype == 'wmv')
+				$filetype == 'mkv' || 
+				$filetype == 'm4v' || 
+				$filetype == 'mov' || 
+				$filetype == 'avi' || 
+				$filetype == 'mpg' || 
+				$filetype == 'iso' || 
+				$filetype == 'vob' || 
+				$filetype == 'wmv')
 		{
 			$result['filename'] = $file;
 			$result['filetype'] = $filetype;
 			$result['name'] = substr($file, 0, -4);
 		}
 		$filetype = strtolower(substr($file, -4));
-		if ($filetype == 'xvid' || $filetype == 'm2ts')
+		if ($filetype == 'xvid' || 
+				$filetype == 'm2ts')
 		{
 			$result = array();
 			$result['filename'] = $file;
