@@ -356,7 +356,75 @@
         var search_name = deeplink_name.replace(/-/g, "+");
         app.model.film_uri = app.model.file_base + film.data.directory + '/' + film.data.filename;
         app.model.poster_uri = app.model.server_base + film.data.directory + '/' + film.data.poster;
-
+				
+				/**
+				 * 3D flip
+				 *
+css
+				.flip {
+					-webkit-perspective: 800;
+				  width: 400px;
+				  height: 200px;
+			    position: relative;
+			    margin: 50px auto;
+				}
+				.flip .card.flipped {
+				  -webkit-transform: rotatey(-180deg);
+				}
+				.flip .card {
+				  width: 100%;
+				  height: 100%;
+				  -webkit-transform-style: preserve-3d;
+				  -webkit-transition: 0.5s;
+				}
+				.flip .card .face {
+				  width: 100%;
+				  height: 100%;
+				  position: absolute;
+				  -webkit-backface-visibility: hidden ;
+				  z-index: 2;
+			    font-family: Georgia;
+			    font-size: 3em;
+			    text-align: center;
+			    line-height: 200px;
+				}
+				.flip .card .front {
+				  position: absolute;
+				  z-index: 1;
+			    background: black;
+			    color: white;
+			    cursor: pointer;
+				}
+				.flip .card .back {
+				  -webkit-transform: rotatey(-180deg);
+			    background: blue;
+			    background: white;
+			    color: black;
+			    cursor: pointer;
+				}
+		    
+script					
+		    $('.flip').click(function(){
+	        $(this).find('.card').addClass('flipped').mouseleave(function(){
+	          $(this).removeClass('flipped');
+	        });
+	        return false;
+		    });
+				
+html
+				<div class="flip"> 
+	        <div class="card"> 
+            <div class="face front"> 
+              Front
+            </div> 
+            <div class="face back"> 
+              Back
+            </div> 
+	        </div> 
+		    </div> 
+				 *
+				 */
+				
         html += '<li class="film-large shadowed-background id-' + app.model.film_id + '" data-id="' + app.model.film_id + '" data-name="' + deeplink_name + '" data-directory="' + film.data.directory + '" data-film="' + film.data.filename + '" data-poster="' + film.data.poster + '">';
 
         if (!film.data.poster) {
