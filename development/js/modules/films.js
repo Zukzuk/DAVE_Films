@@ -335,7 +335,7 @@
   function parse_films() {
     var start_item = app.model.current_offset * app.model.films_per_page;
     var end_item = app.model.films_per_page + (app.model.current_offset * app.model.films_per_page);
-    //end_item += fill_last_row();
+    app.model.alphabet_count = 0;
 
     var target = $('#films ul');
     target.empty();
@@ -346,8 +346,9 @@
 
       if (film) {
         // Add alphabet tiles
-        if (!i)
-            html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';
+        if (!i) {
+        	html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';
+        }
         alphabet_entry = get_alphabet_tile(film.name);
         html += alphabet_entry;
 
@@ -476,7 +477,7 @@
   }
 	
 	/**
-   * Synchronize new and eractivated fims to the cloud
+   * Synchronize new and reactivated films to the cloud
    */
   function synchronize_films() {
     var batch_length = 50;
@@ -484,6 +485,8 @@
     var film_batch = [];
     var film_batches = [];
     var synced_films = [];
+    
+    // create film batches
     for (var i = 0; i < app.model.films_json.payload.length; i++) {
         if (!(i % batch_length) && i) {
             film_batches.push(film_batch);
@@ -492,24 +495,42 @@
         film_batch.push(app.model.films_json.payload[i]);
     };
     film_batches.push(film_batch);
-
-    $.each(film_batches, function(key, film_batch) {
-      app.data.synchronize_films(film_batch).success(function(response) {
-        console.log(response);
-        sync_count++;
-        if (response.synced) {
-          $.each(response.films, function(key, synced_film) {
-              synced_films.push(synced_film);
-          });
-        }
-        if (sync_count == film_batches.length) {
-          if (synced_films.length > 0)
-            $('#menu .synced-button').show().animate({ opacity : 0 }, 0).animate({ opacity : 1 }, 300);
-          app.model.synced_films = synced_films;
-          console.log(app.model.synced_films);
-        }
-      });
-    });
+		
+		// prepare db for sync
+		app.data.prepare_synchronization().success(function(response) {
+			if(!response.error) {
+				// loop through all film batches
+				$.each(film_batches, function(key, film_batch) {
+					// sync batch
+		      app.data.synchronize_films(film_batch).success(function(response) {
+		      	// log each batch
+		        console.log(response);
+		        sync_count++;
+		        if (response.synced) {
+		        	// add film to menu if added to db
+		          $.each(response.films, function(key, synced_film) {
+		              if(synced_film.msg != 'Film unchanged') synced_films.push(synced_film);
+		          });
+		        }
+		        // check if all batches are synced
+		        if (sync_count == film_batches.length) {
+		        	// show synced button in menu if synced films exist
+		          if (synced_films.length > 0) {
+		            $('#menu .synced-button').show().animate({ opacity : 0 }, 0).animate({ opacity : 1 }, 300);
+		          }
+		          // add synced films to model for later use
+		          app.model.synced_films = synced_films;
+		          // log synced films
+		          console.log(app.model.synced_films);
+		        }
+		        // finish sync
+		        app.data.finish_synchronization().success(function(response) {
+		        	console.log(response);
+		        });
+		      });
+		    });
+		 	}
+	  });
   }
 
   /**

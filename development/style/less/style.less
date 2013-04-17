@@ -5,8 +5,10 @@
 @color-grey-mid : #999;
 @color-grey-near-dark : #333;
 @color-grey-dark : #222;
+
 //Custom
 @color-brand : #1d8fd5;
+
 // Awesome
 @color-awesome-green : #91bd09;
 @color-awesome-green-dark : #749a02;
@@ -20,6 +22,7 @@
 @color-awesome-orange-dark : #d45500;
 @color-awesome-yellow : #ffb515;
 @color-awesome-yellow-dark : #fc9200;
+
 // Kelly
 @color-kelly-vivid-yellow : #FFB300;
 @color-kelly-strong-purple : #803E75;
@@ -28,6 +31,7 @@
 @color-kelly-vivid-red : #C10020;
 @color-kelly-grayish-yellow : #CEA262;
 @color-kelly-medium-gray : #817066; 
+
 // Kelly - The following will not be good for people with defective color vision
 @color-kelly-vivid-green : #007D34;
 @color-kelly-strong-purplish-pink : #F6768E;
@@ -42,6 +46,7 @@
 @color-kelly-deep-yellowish-brown : #593315;
 @color-kelly-reddish-orange : #F13A13;
 @color-kelly-dark-olive-green : #232C16;
+
 // Boynton Optimized
 @color-boynton-blue : #0000FF;
 @color-boynton-red : #FF0000; 
@@ -116,8 +121,7 @@ audio:not([controls]) { display: none; }
 /* typo */
 b, strong { font-weight: bold; }
 
-a, a:link, a:active, a:visited 
-{ 
+a, a:link, a:active, a:visited { 
   .transition(.25);
   outline: none; 
   text-decoration:none;  
@@ -158,14 +162,11 @@ h1, h2, h3, h4, h5 { font-weight:normal; font-family: @font-body; text-transform
 .api header a { padding:0; }
 .api a:hover { background-color:@color-brand; color:white; }
 
-
-
 /* BODY */
-
 div#container { width:100%;}
 div#login { margin:50px auto; width:300px; height:220px;  }
-
 html, body { -webkit-font-smoothing: antialiased; }
+
 /* For the "inset" look only */
 html {
     overflow: auto;
@@ -190,44 +191,37 @@ body {
 }
 /* Scrollbar! Let's get this party started */
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 } 
 /* Track */
 ::-webkit-scrollbar-track {
-    .box-shadow-inset(0, 0, 6px, rgba(0,0,0,0.3));
-    .border-radius(10px);
-    border-radius: 10px;
+  .box-shadow-inset(0, 0, 6px, rgba(0,0,0,0.3));
+  .border-radius(10px);
+  border-radius: 10px;
 } 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    .border-radius(10px);
-    background: rgba(160,160,160,0.8); 
-    .box-shadow-inset(0, 0, 6px, rgba(0,0,0,0.5));
+  .border-radius(10px);
+  background: rgba(160,160,160,0.8); 
+  .box-shadow-inset(0, 0, 6px, rgba(0,0,0,0.5));
 }
 ::-webkit-scrollbar-thumb:window-inactive {
   background: rgba(160,160,160,0.4); 
 }
 
-
-
 /* VIEW: LOGIN */
-
-#login-form 
-{
+#login-form {
 	width: 265px;
   height: 120px;
-  padding: 10px 30px 30px 30px;
-  
-	label 
-	{ 
+  padding: 25px 30px 30px 30px;
+	label { 
     width: 65px;
     display: block;
     float: left;
     line-height: 46px;
     font-size: 14px;
   }
-  input
-  { 
+  input { 
     border: 0 none;
     font-weight: bold;
     font-size:12px;
@@ -239,25 +233,18 @@ body {
     .box-shadow(0, 1px, 0, rgba(255, 255, 255, 0.1));
     .box-shadow-inset(0, 1px, 3px, rgba(0, 0, 0, 0.2));
     .border-radius(20px);
- }
- .login-button 
- {
-   float: right;
-   margin: 9px 15px 0 0;
- }
+  }
+  .login-button {
+    float: right;
+    margin: 9px 15px 0 0;
+  }
 }
 
-
-
 /* VIEW: FILMS */
-
 // menu (outside the wrapper!)
-#menu
-{
-  .menu-inner 
-  {
-    margin: 9px 17px 0 17px;
-    
+#menu {
+  .menu-inner {
+    margin: 9px 17px 0 17px;    
     .logout-button {
       float: right;
       margin: 0 3px 0 0;
@@ -284,8 +271,7 @@ body {
 }
 
 // search
-#search
-{
+#search {
   position:relative;
   display:block; 
   z-index:100;
@@ -294,8 +280,7 @@ body {
   width:100%;
   height:80px;
 }
-#loader-small
-{
+#loader-small {
   position:relative;
   display:block; 
   top:24px; 
@@ -303,14 +288,12 @@ body {
   width:20px;
   height:20px; 
 }
-#search-form
-{
+#search-form {
   margin:0px auto;
   width:190px;
   height:80px;
 }
-#search-form input[type="text"] 
-{
+#search-form input[type="text"] {
   background: url(../../images/ui/search-white-filmreel.png) no-repeat 10px 6px #333;
   border: 0 none;
   font-weight: bold;
@@ -324,8 +307,7 @@ body {
   .border-radius(20px);
   .transition(0.4s);
 }
-#search-form input[type="text"]:focus 
-{
+#search-form input[type="text"]:focus {
   background: url(../../images/ui/search-dark-filmreel.png) no-repeat 10px 6px #fcfcfc;
   color: @color-grey-near-dark;
   width: 200px;
@@ -336,8 +318,7 @@ body {
 }
 
 // gallery
-#films
-{
+#films {
   margin:50px auto;
 }
 .full #films { max-width:1600px; }
@@ -349,16 +330,14 @@ body {
 .mobile_small #films { max-width:148px; } 
 
 // player
-#player
-{
+#player {
   width:100%;
   margin-top:50px;
   text-align:center; 
 }
 
 // alphabet tiles
-.film-alphabet
-{
+.film-alphabet {
   position: relative;
   float:left;
   padding:2px;
@@ -368,22 +347,19 @@ body {
   padding:4px;
   margin:4px;
 }
-h1
-{
+h1 {
   margin:-10px 0 0 -20px;
   font-size:90px;
   .opacity(0.3);
 }
-.depth 
-{
+.depth {
   display: block;
   padding: 55px;
   color: black;
   font-weight: bold;
   position: relative;
 }
-.depth:before, .depth:after
-{
+.depth:before, .depth:after {
   content: attr(title);
   padding: 55px;
   color: rgba(255,255,255,.05);
@@ -393,8 +369,7 @@ h1
 .depth:after  { top: 2px; left: 2px }
 
 // film tiles
-.film-large
-{
+.film-large {
   position: relative;
   float:left;
   display:block;
@@ -402,23 +377,20 @@ h1
   width:140px;
   height:200px;
 }
-img.grayscale 
-{
+img.grayscale {
   .transition(0.5s);
   filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
   filter: gray; /* IE6-9 */
   -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 }
-img.grayscale.disabled 
-{
+img.grayscale.disabled {
   .transition(4s);
   filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 1 0\'/></filter></svg>#grayscale");
   -webkit-filter: grayscale(0%);
 }
 
 // ui
-a.play-button, a.collection-button, a.empty-button
-{
+a.play-button, a.collection-button, a.empty-button {
   position:absolute;
   display: block;
   top:70px;
@@ -427,32 +399,25 @@ a.play-button, a.collection-button, a.empty-button
   height: 40px;
   text-decoration: none;
   .opacity(0); 
-  &:hover
-  {
+  &:hover {
     background-position: 0 -40px;
   }
 }
-a.play-button
-{
+a.play-button {
   background: url(../../images/ui/play-button.png);
 }
-a.collection-button
-{
+a.collection-button {
   background: url(../../images/ui/collection-button.png);
 }
-a.empty-button
-{
+a.empty-button {
   //background: url(../../images/ui/empty-button.png);
 }
-li:hover
-{
-  a.play-button, a.collection-button
-  {
+li:hover {
+  a.play-button, a.collection-button {
     .opacity(1);
   }
 }
-.google-search
-{
+.google-search {
   position:absolute;
   display: block;
   text-align:center;
@@ -462,34 +427,30 @@ li:hover
   font-size:13px;
   text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
   color:@color-grey-mid;
-  a, a:link, a:active, a:visited 
-  {
+  a, a:link, a:active, a:visited {
     color:@color-kelly-vivid-yellowish-green;
   }
 }
-.bookmark
-{
-  position:relative;
-  display: block; 
-  width:25px;
-  height:28px;
-  top:-206px; 
-  left:-3px;
-  float:left; 
-  font-size:7px;  
-  .text-bookmark
-  {
-    position:relative;
+.bookmark {
+  position: relative;
+  display: block;
+  width: 25px;
+  height: 28px;
+  top: -206px;
+  left: -5px;
+  float: left;
+  font-size: 8px; 
+  .text-bookmark {
+    position: relative;
     display: block;
-    top:-21px;
-    width:34px;
-    text-align:center;
+    top: -22px;
+    width: 35px;
+    text-align: center;
     &.dark { color:@color-grey-near-dark; }
     &.near-light { color:@color-grey-near-light; }
     &.light { color:@color-grey-light; }
   }
-  .icon-bookmark
-  {
+  .icon-bookmark {
     position:relative;
     display: block;
     font-size:28px;
@@ -501,8 +462,7 @@ li:hover
 }
 
 // collection
-.collection-menu, .synced-menu
-{
+.collection-menu, .synced-menu {
   position:absolute;
   display:block;
   top:0px;
@@ -511,19 +471,17 @@ li:hover
   height:208px;
   overflow:hidden;
   z-index:10;
-  background:@color-grey-near-dark; 
-  h2
-  {
+  background:@color-grey-near-dark;
+  h2 {
     padding: 10px 0 0 0; 
-    color: @color-grey-mid; 
+    color: @color-grey-light; 
     text-decoration: none;  
     text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
     text-align:center;
     font-weight:bold;
     font-size:12px; 
   }
-  .inner-menu
-  {
+  .inner-menu {
     position:absolute;
     display:block;
     top:30px;
@@ -532,44 +490,36 @@ li:hover
     height:170px;
     overflow-x: hidden;
     overflow-y: scroll;
-    li
-    {
+    li {
       padding:0px 12px 5px 12px;
     }
-    a 
-    {
+    a {
       width:225px;
     }
   }
 }
-#films .left .collection-menu
-{
+#films .left .collection-menu {
   left:3px;
 }
-.synced-menu
-{
+.synced-menu {
   left: 13px;
   top: 36px;
   z-index: 200;
   height:128px;
   .border-radius(10px);
-  .inner-menu
-  {
+  .inner-menu {
     height:90px;
   }
-  .sync_activate   
-  { 
+  .sync_activate { 
     float:left;
     color:@color-awesome-blue; 
   }
-  .sync_deactivate
-  { 
+  .sync_deactivate { 
     float:left;
     color:@color-kelly-vivid-red; 
   }
 }
-.synced-tab
-{
+.synced-tab {
   position:absolute;
   display:block;
   top: 5px;
@@ -582,8 +532,7 @@ li:hover
 }
 
 //buttons
-.awesome, .awesome:visited 
-{
+.awesome, .awesome:visited {
   background: @color-grey-dark url(../../images/ui/alert-overlay.png) repeat-x; 
   display: inline-block; 
   padding: 5px 10px 6px; 
@@ -635,8 +584,7 @@ li:hover
   padding:4px;
   margin:4px;
 }
-.shadowed-background:before, .shadowed-background:after 
-{
+.shadowed-background:before, .shadowed-background:after {
   z-index: -1; 
   position: absolute; 
   content: "";
@@ -649,8 +597,7 @@ li:hover
   .box-shadow(0, 15px, 10px, rgba(0, 0, 0, 0.7));
   .rotate(-5deg);
 }
-.shadowed-background:after 
-{
+.shadowed-background:after {
   .rotate(5deg);
   right: 10px; 
   left: auto; 

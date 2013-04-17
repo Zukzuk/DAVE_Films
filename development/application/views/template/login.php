@@ -6,7 +6,7 @@
 			<input value=""  type="text" id="username" name="username" autofocus/>
 			<label for="password">Password</label>
 			<input value="" type="password" id="password" name="password" />
-			<button class="awesome large login-button" name="login" type="submit"> Login </button>
+			<button class="awesome medium login-button" name="login" type="submit"> Login </button>
 			<span id="feedback"></span>
 		</form>
 

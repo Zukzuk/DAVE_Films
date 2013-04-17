@@ -116,6 +116,23 @@ $.extend(Data.prototype,
 	},
 	
 	/**
+	 * Prepare synchronization with database
+	 *
+	 */
+	prepare_synchronization : function(_films)
+	{
+		var method = 'prepare_synchronization';
+		var url = app.model.base_url + "secureddata/" + method;
+
+		var type = 'POST';
+		var dataType = "json";
+		var cache = false;
+		var data = {};
+		
+		return this.execute(url, type, dataType, cache, data, method);
+	},
+	
+	/**
 	 * Synchronize films with database
 	 *
 	 */
@@ -131,6 +148,23 @@ $.extend(Data.prototype,
 		{
 			films:_films
 		};
+		
+		return this.execute(url, type, dataType, cache, data, method);
+	},
+	
+	/**
+	 * Finish synchronization with database
+	 *
+	 */
+	finish_synchronization : function(_films)
+	{
+		var method = 'finish_synchronization';
+		var url = app.model.base_url + "secureddata/" + method;
+
+		var type = 'POST';
+		var dataType = "json";
+		var cache = false;
+		var data = {};
 		
 		return this.execute(url, type, dataType, cache, data, method);
 	},
