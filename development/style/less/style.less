@@ -1,10 +1,13 @@
 
 // Colors
-@color-grey-light : #ccc;
-@color-grey-near-light : #aaa;
+@color-grey-light : #eee;
+@color-grey-near-light : #ddd;
+@color-grey-mid-dark : #aaa;
 @color-grey-mid : #999;
+@color-grey-mid-light : #666;
 @color-grey-near-dark : #333;
 @color-grey-dark : #222;
+@color-grey-very-dark : #111;
 
 //Custom
 @color-brand : #1d8fd5;
@@ -157,10 +160,70 @@ h1, h2, h3, h4, h5 { font-weight:normal; font-family: @font-body; text-transform
 // functionality
 .hidden{ display:none; }
 
-// api
-.api a { color:black; padding:5px; }
-.api header a { padding:0; }
-.api a:hover { background-color:@color-brand; color:white; }
+//buttons
+.awesome, .awesome:visited {
+  background: @color-grey-dark url(../../images/ui/alert-overlay.png) repeat-x; 
+  display: inline-block; 
+  padding: 5px 10px 6px; 
+  color: @color-grey-light; 
+  text-decoration: none;  
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  .box-shadow(0, 1px, 3px, rgba(0,0,0,0.5));
+  .border-radius(1px);
+  position: relative;
+  cursor: pointer;
+  text-align:center;
+}
+
+.awesome:hover                                { background-color: @color-grey-very-dark; color: @color-grey-light; }
+.awesome:active                               { background-color: @color-kelly-vivid-yellowish-green; color: @color-grey-near-dark; }
+.awesome, .awesome:visited                    { font-size: 10px; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); }
+
+.small.awesome, .small.awesome:visited        { font-size: 10px; }
+.medium.awesome, .medium.awesome:visited      { font-size: 13px; }
+.large.awesome, .large.awesome:visited        { font-size: 14px; padding: 8px 14px 9px; }
+
+.green.awesome, .green.awesome:visited        { background-color: @color-awesome-green; }
+.green.awesome:hover                          { background-color: @color-awesome-green-dark; }
+.blue.awesome, .blue.awesome:visited          { background-color: @color-awesome-blue; }
+.blue.awesome:hover                           { background-color: @color-awesome-blue-dark; }
+.red.awesome, .red.awesome:visited            { background-color: @color-awesome-red; }
+.red.awesome:hover                            { background-color: @color-awesome-red-dark; }
+.magenta.awesome, .magenta.awesome:visited    { background-color: @color-awesome-magenta; }
+.magenta.awesome:hover                        { background-color: @color-awesome-magenta-dark; }
+.orange.awesome, .orange.awesome:visited      { background-color: @color-awesome-orange; }
+.orange.awesome:hover                         { background-color: @color-awesome-orange-dark; }
+.yellow.awesome, .yellow.awesome:visited      { background-color: @color-awesome-yellow; }
+.yellow.awesome:hover                         { background-color: @color-awesome-yellow-dark; }
+
+// shadowed background
+.shadowed-background {
+  position: relative;
+  background: @color-grey-near-dark; 
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding:4px;
+  margin:4px;
+}
+.shadowed-background:before, .shadowed-background:after {
+  z-index: -1; 
+  position: absolute; 
+  content: "";
+  bottom: 17px;
+  left: 10px;
+  width: 90%; 
+  top: 80%;
+  max-width:300px;
+  background: rgba(0, 0, 0, 0.7); 
+  .box-shadow(0, 15px, 10px, rgba(0, 0, 0, 0.7));
+  .rotate(-5deg);
+}
+.shadowed-background:after {
+  .rotate(5deg);
+  right: 10px; 
+  left: auto; 
+}
 
 /* BODY */
 div#container { width:100%;}
@@ -269,6 +332,13 @@ body {
     }
   }
 }
+#menu .awesome:active { top: 1px; }
+#menu .small.awesome.active { background-color: @color-kelly-vivid-yellowish-green; color: @color-grey-near-dark; }
+#menu .page-button.small.awesome, 
+#menu .suggest-button.small.awesome,
+#menu .logout-button.small.awesome,
+#menu .synced-button.small.awesome { color: @color-grey-dark; }
+#menu .synced-film.small.awesome:active { background-color: @color-awesome-blue; color: @color-grey-near-dark; }
 
 // search
 #search {
@@ -369,11 +439,11 @@ h1 {
 .depth:after  { top: 2px; left: 2px }
 
 // film tiles
-.film-large {
+.card { 
   position: relative;
   float:left;
   display:block;
-  padding:2px;
+  padding:4px;
   width:140px;
   height:200px;
 }
@@ -413,7 +483,7 @@ a.empty-button {
   //background: url(../../images/ui/empty-button.png);
 }
 li:hover {
-  a.play-button, a.collection-button {
+  a.play-button, a.collection-button, .filter-button {
     .opacity(1);
   }
 }
@@ -431,6 +501,18 @@ li:hover {
     color:@color-kelly-vivid-yellowish-green;
   }
 }
+.filter-button {
+  position: relative;
+  display: block;
+  width: 13px;
+  height: 11px;
+  top: -198px;
+  right: 3px;
+  float: right;
+  .opacity(0);
+}
+.small.awesome.filter-button { padding:3px 3px 3px 4px; color:@color-grey-light;  } 
+.small.awesome.filter-button:active { background-color: @color-kelly-vivid-yellowish-green; color: @color-grey-near-dark; }
 .bookmark {
   position: relative;
   display: block;
@@ -453,8 +535,9 @@ li:hover {
   .icon-bookmark {
     position:relative;
     display: block;
-    font-size:28px;
+    font-size:29px;
     &.hd { color:@color-grey-near-dark; }
+    &.cl { color:@color-grey-near-dark; }
     &.info { color:@color-kelly-vivid-yellowish-green; }
     &.notice { color:@color-kelly-vivid-yellow; }
     &.warning { color:@color-kelly-vivid-red; }
@@ -462,7 +545,7 @@ li:hover {
 }
 
 // collection
-.collection-menu, .synced-menu {
+.collection-menu, .filter-menu, .synced-menu {
   position:absolute;
   display:block;
   top:0px;
@@ -474,7 +557,7 @@ li:hover {
   background:@color-grey-near-dark;
   h2 {
     padding: 10px 0 0 0; 
-    color: @color-grey-light; 
+    color: @color-grey-mid; 
     text-decoration: none;  
     text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
     text-align:center;
@@ -496,9 +579,23 @@ li:hover {
     a {
       width:225px;
     }
+    .icon-circle, .icon-circle-blank {
+      position:absolute;
+      top:6px;
+      left:4px;
+      font-size:11px; 
+      color: @color-grey-near-dark;
+    }
+    .icon-circle {
+      .opacity(0);
+    }
   }
 }
-#films .left .collection-menu {
+.filter-menu .icon-search {
+  padding:0 5px 0 0;
+  color: @color-grey-mid-dark;
+}
+#films .left .collection-menu, #films .left .filter-menu  {
   left:3px;
 }
 .synced-menu {
@@ -528,78 +625,6 @@ li:hover {
   height: 50px;
   z-index: -1;
   background:@color-grey-near-dark; 
-  .border-radius(10px);
-}
-
-//buttons
-.awesome, .awesome:visited {
-  background: @color-grey-dark url(../../images/ui/alert-overlay.png) repeat-x; 
-  display: inline-block; 
-  padding: 5px 10px 6px; 
-  color: @color-grey-light; 
-  text-decoration: none;  
-  text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
-  border-bottom: 1px solid rgba(0,0,0,0.25);
-  .box-shadow(0, 1px, 3px, rgba(0,0,0,0.5));
   .border-radius(5px);
-  position: relative;
-  cursor: pointer;
-  text-align:center;
-}
-
-.awesome:hover                                                          { background-color: #111; color: white; }
-.awesome:active                                                         { top: 1px; background-color: @color-kelly-vivid-yellowish-green; color: @color-grey-near-dark; }
-.synced-film.small.awesome:active                                       { background-color: @color-awesome-blue; color: @color-grey-near-dark; }
-.awesome, .awesome:visited,                                             { font-size: 10px; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); }
-.small.awesome, .small.awesome:visited                                  { font-size: 10px; padding: ; }
-.small.awesome.active                                                   { background-color: @color-kelly-vivid-yellowish-green; color: @color-grey-near-dark; }
-
-#menu .page-button.small.awesome, 
-#menu .suggest-button.small.awesome,
-#menu .logout-button.small.awesome,
-#menu .synced-button.small.awesome                                      { color: @color-grey-dark; }
-
-.medium.awesome, .medium.awesome:visited                                { font-size: 13px; }
-.large.awesome, .large.awesome:visited                                  { font-size: 14px; padding: 8px 14px 9px; }
-
-.green.awesome, .green.awesome:visited                                  { background-color: @color-awesome-green; }
-.green.awesome:hover                                                    { background-color: @color-awesome-green-dark; }
-.blue.awesome, .blue.awesome:visited                                    { background-color: @color-awesome-blue; }
-.blue.awesome:hover                                                     { background-color: @color-awesome-blue-dark; }
-.red.awesome, .red.awesome:visited                                      { background-color: @color-awesome-red; }
-.red.awesome:hover                                                      { background-color: @color-awesome-red-dark; }
-.magenta.awesome, .magenta.awesome:visited                              { background-color: @color-awesome-magenta; }
-.magenta.awesome:hover                                                  { background-color: @color-awesome-magenta-dark; }
-.orange.awesome, .orange.awesome:visited                                { background-color: @color-awesome-orange; }
-.orange.awesome:hover                                                   { background-color: @color-awesome-orange-dark; }
-.yellow.awesome, .yellow.awesome:visited                                { background-color: @color-awesome-yellow; }
-.yellow.awesome:hover                                                   { background-color: @color-awesome-yellow-dark; }
-
-// shadowed background
-.shadowed-background {
-  position: relative;
-  background: @color-grey-near-dark; 
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  padding:4px;
-  margin:4px;
-}
-.shadowed-background:before, .shadowed-background:after {
-  z-index: -1; 
-  position: absolute; 
-  content: "";
-  bottom: 17px;
-  left: 10px;
-  width: 90%; 
-  top: 80%;
-  max-width:300px;
-  background: rgba(0, 0, 0, 0.7); 
-  .box-shadow(0, 15px, 10px, rgba(0, 0, 0, 0.7));
-  .rotate(-5deg);
-}
-.shadowed-background:after {
-  .rotate(5deg);
-  right: 10px; 
-  left: auto; 
 }
 

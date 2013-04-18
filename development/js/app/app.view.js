@@ -27,11 +27,12 @@ $.extend(View.prototype,
 
 	clear : function()
 	{
+		// @formatter:off
 		// clear class here
 		this.add = function() { };
-
 		this.login_view = function() { };
 		this.films_view = function() { };
+		//@formatter:on
 	},
 
 	setup : function()

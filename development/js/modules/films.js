@@ -2,9 +2,10 @@
  * @author: Dave Timmerman
  */
 (function() {
-		
+  "use strict";
+  
   function init() {
-  	
+    
     // Reset event listeners
     $(document).off();
     $(window).off();
@@ -61,6 +62,8 @@
     $(document).on('click', '.play-button', on_click_play);
     $(document).on('click', '.collection-button', on_click_collection);
     $(document).on('mouseleave', '.collection-menu', on_rollout_collection);
+    $(document).on('click', '.filter-button', on_click_filter);
+    $(document).on('mouseleave', '.filter-menu', on_rollout_filter);
     $(document).on('click', '.suggest-button', on_click_suggest);
     $(document).on('click', '.synced-button', on_click_synced);
     $(document).on('mouseleave', '.synced-menu', on_rollout_synced);
@@ -137,15 +140,16 @@
       menu.find('ul').animate({ opacity : 0 }, 0);
       for (var i = 0; i < entries.length; i++) {
         target
-        	.find('.collection-menu .inner-menu ul')
-        	.append('<li><a href="' + app.model.file_base + target.data('directory') + '/' + entries[i].filename + '" target="_blank" class="small awesome">' + entries[i].name + '</a></li>');
+          .find('.collection-menu .inner-menu ul')
+          .append('<li><a href="' + app.model.file_base + target.data('directory') + '/' + entries[i].filename + '" target="_blank" class="small awesome"><i class="icon-circle"></i><i class="icon-circle-blank"></i>' + entries[i].name + '</a></li>');
       };
       target.find('.collection-menu ul').delay(400).animate({
         opacity : 1
       }, 400);
     });
   }
-
+  
+  
   /**
    * Handle collection menu rollout events
    */
@@ -153,6 +157,44 @@
     var target = $(event.currentTarget).parent();
     target.find('.collection-menu ul').animate({ opacity : 0 }, 300, function() {
       target.find('.collection-menu').animate({ opacity : 0 }, 300, function() {
+        this.remove();
+      });
+    });
+  }
+  
+  /**
+   * Handle click to show filter contents events
+   */
+  function on_click_filter(event) {
+    var target = $(event.currentTarget).parent();
+    var menu = target.find('.filter-menu');
+    menu.remove();
+
+    app.data.get_collection(target.data('directory')).success(function(response) {
+      //console.log(data);
+      var entries = response.payload.data.entries;
+      target.append('<div class="filter-menu"><h2><i class="icon-search"></i>' + response.payload.name + '</h2><div class="inner-menu"><ul></ul></div></div>');
+      menu = target.find('.filter-menu');
+      menu.animate({ opacity : 0 }, 0).animate({ opacity : 1 }, 400); 
+      menu.find('ul').animate({ opacity : 0 }, 0);
+      for (var i = 0; i < entries.length; i++) {
+        target
+          .find('.filter-menu .inner-menu ul')
+          .append('<li><a href="' + app.model.file_base + target.data('directory') + '/' + entries[i].filename + '" target="_blank" class="small awesome"><i class="icon-circle"></i><i class="icon-circle-blank"></i>' + entries[i].name + '</a></li>');
+      };
+      target.find('.filter-menu ul').delay(400).animate({
+        opacity : 1
+      }, 400);
+    });
+  }
+
+  /**
+   * Handle filter menu rollout events
+   */
+  function on_rollout_filter(event) {
+    var target = $(event.currentTarget).parent();
+    target.find('.filter-menu ul').animate({ opacity : 0 }, 300, function() {
+      target.find('.filter-menu').animate({ opacity : 0 }, 300, function() {
         this.remove();
       });
     });
@@ -172,25 +214,25 @@
     var list = menu.find('ul');
     list.animate({ opacity : 0 }, 0);
     for (var i = 0; i < app.model.synced_films.length; i++) {
-    	if (app.model.synced_films[i].active) {
-      	list.append(''+
-      		'<li>'+
-      			'<a href="javascript:void(0);" class="small awesome synced-film" data-film="' + app.model.synced_films[i].name + '">'+
-      				'<i class="icon-exchange sync_activate"></i>'+
-      				app.model.synced_films[i].name + 
-      			'</a>'+
-      		'</li>'
-      	);
+      if (app.model.synced_films[i].active) {
+        list.append(''+
+          '<li>'+
+            '<a href="javascript:void(0);" class="small awesome synced-film" data-film="' + app.model.synced_films[i].name + '">'+
+              '<i class="icon-exchange sync_activate"></i>'+
+              app.model.synced_films[i].name + 
+            '</a>'+
+          '</li>'
+        );
       }
       else {
-      	list.append(''+
-      		'<li>'+
-      			'<a href="javascript:void(0);" title="Resource not synced : ' + app.model.synced_films[i].msg + '." class="small awesome synced-film" data-film="' + app.model.synced_films[i].name + '">'+
-      				'<i class="icon-remove sync_deactivate"></i>'+
-      				app.model.synced_films[i].name + 
-      			'</a>'+
-      		'</li>'
-      	);
+        list.append(''+
+          '<li>'+
+            '<a href="javascript:void(0);" title="Resource not synced : ' + app.model.synced_films[i].msg + '." class="small awesome synced-film" data-film="' + app.model.synced_films[i].name + '">'+
+              '<i class="icon-remove sync_deactivate"></i>'+
+              app.model.synced_films[i].name + 
+            '</a>'+
+          '</li>'
+        );
       }
     };
     list.delay(400).animate({ opacity : 1 }, 400);
@@ -258,15 +300,15 @@
         var pos = target.offset();
         $('.wrapper').animate({ scrollTop : pos.top - 150 }, 0);
         target.find('img')
-        	.stop().delay(1000)
-        	.animate({ opacity : 0.2 }, 200)
+          .stop().delay(1000)
+          .animate({ opacity : 0.2 }, 200)
           .animate({ opacity : 1 }, 200)
           .animate({ opacity : 0.2 }, 200)
           .animate({ opacity : 1 }, 200)
           .animate({ opacity : 0.2 }, 200)
           .animate({ opacity : 1 }, 3000, function() {
             images.addClass('disabled');
-        	});
+          });
         break;
       }
       if (i == app.model.films_json.payload.length - 1 && !data.search_retry) {
@@ -342,90 +384,90 @@
     for (var i = start_item; i < end_item; i++) {
       app.model.film_id = i;
       var film = app.model.films_json.payload[i];
-      html = '';
+      var html = '';
 
       if (film) {
         // Add alphabet tiles
         if (!i) {
-        	html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';
+          html = '<li class="film-alphabet"><h1 class="depth" title="#">#</li>';
         }
-        alphabet_entry = get_alphabet_tile(film.name);
+        var alphabet_entry = get_alphabet_tile(film.name);
         html += alphabet_entry;
 
         var deeplink_name = get_deeplink_name(film.name);
         var search_name = deeplink_name.replace(/-/g, "+");
         app.model.film_uri = app.model.file_base + film.data.directory + '/' + film.data.filename;
         app.model.poster_uri = app.model.server_base + film.data.directory + '/' + film.data.poster;
-				
-				/**
-				 * 3D flip
-				 *
+        
+        /**
+         * 3D flip
+         *
 css
-				.flip {
-					-webkit-perspective: 800;
-				  width: 400px;
-				  height: 200px;
-			    position: relative;
-			    margin: 50px auto;
-				}
-				.flip .card.flipped {
-				  -webkit-transform: rotatey(-180deg);
-				}
-				.flip .card {
-				  width: 100%;
-				  height: 100%;
-				  -webkit-transform-style: preserve-3d;
-				  -webkit-transition: 0.5s;
-				}
-				.flip .card .face {
-				  width: 100%;
-				  height: 100%;
-				  position: absolute;
-				  -webkit-backface-visibility: hidden ;
-				  z-index: 2;
-			    font-family: Georgia;
-			    font-size: 3em;
-			    text-align: center;
-			    line-height: 200px;
-				}
-				.flip .card .front {
-				  position: absolute;
-				  z-index: 1;
-			    background: black;
-			    color: white;
-			    cursor: pointer;
-				}
-				.flip .card .back {
-				  -webkit-transform: rotatey(-180deg);
-			    background: blue;
-			    background: white;
-			    color: black;
-			    cursor: pointer;
-				}
-		    
-script					
-		    $('.flip').click(function(){
-	        $(this).find('.card').addClass('flipped').mouseleave(function(){
-	          $(this).removeClass('flipped');
-	        });
-	        return false;
-		    });
-				
+        .flip {
+          -webkit-perspective: 800;
+          width: 400px;
+          height: 200px;
+          position: relative;
+          margin: 50px auto;
+        }
+        .flip .card.flipped {
+          -webkit-transform: rotatey(-180deg);
+        }
+        .flip .card {
+          width: 100%;
+          height: 100%;
+          -webkit-transform-style: preserve-3d;
+          -webkit-transition: 0.5s;
+        }
+        .flip .card .face {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          -webkit-backface-visibility: hidden ;
+          z-index: 2;
+          font-family: Georgia;
+          font-size: 3em;
+          text-align: center;
+          line-height: 200px;
+        }
+        .flip .card .front {
+          position: absolute;
+          z-index: 1;
+          background: black;
+          color: white;
+          cursor: pointer;
+        }
+        .flip .card .back {
+          -webkit-transform: rotatey(-180deg);
+          background: blue;
+          background: white;
+          color: black;
+          cursor: pointer;
+        }
+        
+script          
+        $('.flip').click(function(){
+          $(this).find('.card').addClass('flipped').mouseleave(function(){
+            $(this).removeClass('flipped');
+          });
+          return false;
+        });
+        
 html
-				<div class="flip"> 
-	        <div class="card"> 
+        <div class="flip"> 
+          <div class="card"> 
             <div class="face front"> 
               Front
             </div> 
             <div class="face back"> 
               Back
             </div> 
-	        </div> 
-		    </div> 
-				 *
-				 */
-				
-        html += '<li class="film-large shadowed-background id-' + app.model.film_id + '" data-id="' + app.model.film_id + '" data-name="' + deeplink_name + '" data-directory="' + film.data.directory + '" data-film="' + film.data.filename + '" data-poster="' + film.data.poster + '">';
+          </div> 
+        </div> 
+         *
+         */
+        
+        html += '<li class="card shadowed-background id-' + app.model.film_id + '" data-id="' + app.model.film_id + '" data-name="' + deeplink_name + '" data-directory="' + film.data.directory + '" data-film="' + film.data.filename + '" data-poster="' + film.data.poster + '">';
 
         if (!film.data.poster) {
             // Add empty frame
@@ -462,7 +504,7 @@ html
             switch(type) {
               //Info
               case "collection":
-                html += '<div class="bookmark"><i class="icon-bookmark info"></i><div class="text-bookmark dark">CL</div></div>';
+                html += '<div class="bookmark"><i class="icon-bookmark cl"></i><div class="text-bookmark near-light">CL</div></div>';
                 break;
               case "remake":
                 html += '<div class="bookmark"><i class="icon-bookmark info"></i><div class="text-bookmark dark">RM</div></div>';
@@ -484,6 +526,7 @@ html
             }
           });
         }
+        html += '<div class="small awesome filter-button"><i class="icon-plus-sign"></i></div>';
 
         html += '</li>';
         target.append(html);
@@ -543,8 +586,8 @@ html
 
     return html;
   }
-	
-	/**
+  
+  /**
    * Synchronize new and reactivated films to the cloud
    */
   function synchronize_films() {
@@ -563,42 +606,42 @@ html
         film_batch.push(app.model.films_json.payload[i]);
     };
     film_batches.push(film_batch);
-		
-		// prepare db for sync
-		app.data.prepare_synchronization().success(function(response) {
-			if(!response.error) {
-				// loop through all film batches
-				$.each(film_batches, function(key, film_batch) {
-					// sync batch
-		      app.data.synchronize_films(film_batch).success(function(response) {
-		      	// log each batch
-		        console.log(response);
-		        sync_count++;
-		        if (response.synced) {
-		        	// add film to menu if added to db
-		          $.each(response.films, function(key, synced_film) {
-		              if(synced_film.msg != 'Film unchanged') synced_films.push(synced_film);
-		          });
-		        }
-		        // check if all batches are synced
-		        if (sync_count == film_batches.length) {
-		        	// show synced button in menu if synced films exist
-		          if (synced_films.length > 0) {
-		            $('#menu .synced-button').show().animate({ opacity : 0 }, 0).animate({ opacity : 1 }, 300);
-		          }
-		          // add synced films to model for later use
-		          app.model.synced_films = synced_films;
-		          // log synced films
-		          console.log(app.model.synced_films);
-		        }
-		        // finish sync
-		        app.data.finish_synchronization().success(function(response) {
-		        	console.log(response);
-		        });
-		      });
-		    });
-		 	}
-	  });
+    
+    // prepare db for sync
+    app.data.prepare_synchronization().success(function(response) {
+      if(!response.error) {
+        // loop through all film batches
+        $.each(film_batches, function(key, film_batch) {
+          // sync batch
+          app.data.synchronize_films(film_batch).success(function(response) {
+            // log each batch
+            console.log(response);
+            sync_count++;
+            if (response.synced) {
+              // add film to menu if added to db
+              $.each(response.films, function(key, synced_film) {
+                  if(synced_film.msg != 'Film unchanged') synced_films.push(synced_film);
+              });
+            }
+            // check if all batches are synced
+            if (sync_count == film_batches.length) {
+              // show synced button in menu if synced films exist
+              if (synced_films.length > 0) {
+                $('#menu .synced-button').show().animate({ opacity : 0 }, 0).animate({ opacity : 1 }, 300);
+              }
+              // add synced films to model for later use
+              app.model.synced_films = synced_films;
+              // log synced films
+              console.log(app.model.synced_films);
+            }
+            // finish sync
+            app.data.finish_synchronization().success(function(response) {
+              console.log(response);
+            });
+          });
+        });
+      }
+    });
   }
 
   /**
@@ -616,8 +659,8 @@ html
     if (film.data.types) {
       for (var i = 0; i < film.data.types.length; i++) {
         if (film.data.types[i] == 'collection') {
-	        is_collection = true;
-	        break;
+          is_collection = true;
+          break;
         }
       };
     }
