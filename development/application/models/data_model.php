@@ -63,10 +63,9 @@ class Data_model extends CI_Model {
         $payload[$count]['data']['subtitle'] = FALSE;
         $payload[$count]['data']['poster'] = FALSE;
         $payload[$count]['data']['count'] = 0;
-
+        
         // get name
         $payload[$count]['name'] = $this -> _get_name_from_dirname($dir_name);
-
         // get year
         $payload[$count]['year'] = $this -> _get_year_from_dirname($dir_name);
 
@@ -488,18 +487,22 @@ class Data_model extends CI_Model {
   ///////////////
 
   private function _get_name_from_dirname($dir_name) {
-    if (strpos($dir_name, '[') === FALSE)
+    if (strpos($dir_name, '[') === FALSE) {
       $name = substr($dir_name, 0, -5);
-    else
+    }
+    else {
       $name = substr(substr($dir_name, 0, strpos($dir_name, '[') - 1), 0, -5);
+    }
     return $name;
   }
 
   private function _get_year_from_dirname($dir_name) {
-    if (strpos($dir_name, '[') === FALSE)
+    if (strpos($dir_name, '[') === FALSE) {
       $year = substr($dir_name, -4);
-    else
+    }
+    else {
       $year = substr(substr($dir_name, 0, strpos($dir_name, '[') - 1), -4);
+    }
     return $year;
   }
 
@@ -507,10 +510,12 @@ class Data_model extends CI_Model {
     $result = FALSE;
     if (strpos($currentname, '-') !== FALSE) {
       $names = explode('-', $currentname);
-      if (substr($names[2], 1) == substr($names[0], 0, -1))
+      if (substr($names[2], 1) == substr($names[0], 0, -1)) {
         $result['name'] = substr($names[2], 1);
-      else
+      }
+      else {
         $result['name'] = substr($names[0], 0, -1) . " - " . substr($names[2], 1);
+      }
       $result['series'] = substr($names[0], 0, -1);
     }
     else {
@@ -537,13 +542,22 @@ class Data_model extends CI_Model {
   private function _get_film_by_filetype($file) {
     $result = FALSE;
     $filetype = strtolower(substr($file, -3));
-    if ($filetype == 'mp4' || $filetype == 'mkv' || $filetype == 'm4v' || $filetype == 'mov' || $filetype == 'avi' || $filetype == 'mpg' || $filetype == 'iso' || $filetype == 'vob' || $filetype == 'wmv') {
+    if( $filetype == 'mp4' || 
+        $filetype == 'mkv' || 
+        $filetype == 'm4v' || 
+        $filetype == 'mov' || 
+        $filetype == 'avi' || 
+        $filetype == 'mpg' || 
+        $filetype == 'iso' || 
+        $filetype == 'vob' || 
+        $filetype == 'wmv') {
       $result['filename'] = $file;
       $result['filetype'] = $filetype;
       $result['name'] = substr($file, 0, -4);
     }
     $filetype = strtolower(substr($file, -4));
-    if ($filetype == 'xvid' || $filetype == 'm2ts') {
+    if( $filetype == 'xvid' || 
+        $filetype == 'm2ts') {
       $result = array();
       $result['filename'] = $file;
       $result['filetype'] = $filetype;
@@ -573,9 +587,9 @@ class Data_model extends CI_Model {
   private function _check_for_subdirectories($contents) {
     $result = FALSE;
     foreach ($contents as $key => $content) {
-      if ($content === '.' or $content === '..')
+      if ($content === '.' or $content === '..') {
         continue;
-
+      }
       // TODO: check for real dirs! glob() and is_dir somehow don't detect subdirs...
       $check1 = strtolower(substr($content, -3, 1));
       $check2 = strtolower(substr($content, -4, 1));
@@ -591,13 +605,14 @@ class Data_model extends CI_Model {
   private function _get_films_from_directory($contents) {
     $result = FALSE;
     foreach ($contents as $key => $content) {
-      if ($content === '.' or $content === '..')
+      if ($content === '.' or $content === '..') {
         continue;
-
+      }
       $_result = $this -> _get_film_by_filetype($content);
       if ($_result) {
-        if (!$result)
+        if (!$result) {
           $result = array();
+        }
         array_push($result, $_result);
       }
     }

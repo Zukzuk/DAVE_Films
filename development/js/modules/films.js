@@ -44,9 +44,12 @@
       });
       return false;
     });
+    
+    // Reset if not <enter>
     $('#search-form').keydown(function(event) {
-        if (event.keyCode != 13) app.model.search_id = 0;
-        // Reset if not <enter>
+      if (event.keyCode != 13) {
+        app.model.search_id = 0;
+      }
     });
 
     // Parse films
@@ -62,8 +65,8 @@
     $(document).on('click', '.play-button', on_click_play);
     $(document).on('click', '.collection-button', on_click_collection);
     $(document).on('mouseleave', '.collection-menu', on_rollout_collection);
-    $(document).on('click', '.filter-button', on_click_filter);
-    $(document).on('mouseleave', '.filter-menu', on_rollout_filter);
+    $(document).on('click', '.add-filter-button', on_click_add_filter);
+    $(document).on('mouseleave', '.add-filter-menu', on_rollout_add_filter);
     $(document).on('click', '.suggest-button', on_click_suggest);
     $(document).on('click', '.synced-button', on_click_synced);
     $(document).on('mouseleave', '.synced-menu', on_rollout_synced);
@@ -134,21 +137,27 @@
     app.data.get_collection(target.data('directory')).success(function(response) {
       //console.log(data);
       var entries = response.payload.data.entries;
-      target.append('<div class="collection-menu"><h2>' + response.payload.name + '</h2><div class="inner-menu"><ul></ul></div></div>');
+      target
+        .append('<div class="collection-menu"><h2>' + response.payload.name + '</h2><div class="inner-menu"><ul></ul></div></div>');
       menu = target.find('.collection-menu');
-      menu.animate({ opacity : 0 }, 0).animate({ opacity : 1 }, 400); 
-      menu.find('ul').animate({ opacity : 0 }, 0);
+      menu
+        .animate({ opacity : 0 }, 0)
+        .animate({ opacity : 1 }, 400); 
+      menu
+        .find('ul')
+        .animate({ opacity : 0 }, 0);
       for (var i = 0; i < entries.length; i++) {
         target
           .find('.collection-menu .inner-menu ul')
           .append('<li><a href="' + app.model.file_base + target.data('directory') + '/' + entries[i].filename + '" target="_blank" class="small awesome"><i class="icon-circle"></i><i class="icon-circle-blank"></i>' + entries[i].name + '</a></li>');
       };
-      target.find('.collection-menu ul').delay(400).animate({
-        opacity : 1
-      }, 400);
+      target.find('.collection-menu ul')
+        .delay(400)
+        .animate({
+          opacity : 1
+        }, 400);
     });
   }
-  
   
   /**
    * Handle collection menu rollout events
@@ -165,23 +174,25 @@
   /**
    * Handle click to show filter contents events
    */
-  function on_click_filter(event) {
+  function on_click_add_filter(event) {
     var target = $(event.currentTarget).parent();
-    var menu = target.find('.filter-menu');
+    var menu = target.find('.add-filter-menu');
     menu.remove();
 
     app.data.get_collection(target.data('directory')).success(function(response) {
       //console.log(data);
       var entries = response.payload.data.entries;
-      target.append('<div class="filter-menu"><h2><i class="icon-search"></i>' + response.payload.name + '</h2><div class="inner-menu"><ul></ul></div></div>');
+      target.append('<div class="add-filter-menu"><h2><i class="icon-search"></i>' + response.payload.name + '</h2><div class="inner-menu"><ul></ul></div></div>');
       menu = target.find('.filter-menu');
       menu.animate({ opacity : 0 }, 0).animate({ opacity : 1 }, 400); 
       menu.find('ul').animate({ opacity : 0 }, 0);
-      for (var i = 0; i < entries.length; i++) {
-        target
-          .find('.filter-menu .inner-menu ul')
-          .append('<li><a href="' + app.model.file_base + target.data('directory') + '/' + entries[i].filename + '" target="_blank" class="small awesome"><i class="icon-circle"></i><i class="icon-circle-blank"></i>' + entries[i].name + '</a></li>');
-      };
+      target
+        .find('.add-filter-menu .inner-menu ul')
+        .append('' +
+          '<li><form>' +
+            '<input value="" type="text" id="add-filter-form" name="add_filter" placeholder="add a filter..." autofocus/>' +
+            '<button class="awesome medium login-button" name="save" type="submit">Save</button>' +
+          '</form></li>');
       target.find('.filter-menu ul').delay(400).animate({
         opacity : 1
       }, 400);
@@ -191,10 +202,10 @@
   /**
    * Handle filter menu rollout events
    */
-  function on_rollout_filter(event) {
+  function on_rollout_add_filter(event) {
     var target = $(event.currentTarget).parent();
-    target.find('.filter-menu ul').animate({ opacity : 0 }, 300, function() {
-      target.find('.filter-menu').animate({ opacity : 0 }, 300, function() {
+    target.find('.add-filter-menu ul').animate({ opacity : 0 }, 300, function() {
+      target.find('.add-filter-menu').animate({ opacity : 0 }, 300, function() {
         this.remove();
       });
     });
@@ -300,7 +311,8 @@
         var pos = target.offset();
         $('.wrapper').animate({ scrollTop : pos.top - 150 }, 0);
         target.find('img')
-          .stop().delay(1000)
+          .stop()
+          .delay(1000)
           .animate({ opacity : 0.2 }, 200)
           .animate({ opacity : 1 }, 200)
           .animate({ opacity : 0.2 }, 200)
@@ -357,7 +369,6 @@
       $('#player').hide().html('<video controls autoplay poster autobuffer preload="auto" name="media"></video>');
       player_resize();
     }
-
   }
   
   /**
@@ -399,124 +410,60 @@
         app.model.film_uri = app.model.file_base + film.data.directory + '/' + film.data.filename;
         app.model.poster_uri = app.model.server_base + film.data.directory + '/' + film.data.poster;
         
-        /**
-         * 3D flip
-         *
-css
-        .flip {
-          -webkit-perspective: 800;
-          width: 400px;
-          height: 200px;
-          position: relative;
-          margin: 50px auto;
-        }
-        .flip .card.flipped {
-          -webkit-transform: rotatey(-180deg);
-        }
-        .flip .card {
-          width: 100%;
-          height: 100%;
-          -webkit-transform-style: preserve-3d;
-          -webkit-transition: 0.5s;
-        }
-        .flip .card .face {
-          width: 100%;
-          height: 100%;
-          position: absolute;
-          -webkit-backface-visibility: hidden ;
-          z-index: 2;
-          font-family: Georgia;
-          font-size: 3em;
-          text-align: center;
-          line-height: 200px;
-        }
-        .flip .card .front {
-          position: absolute;
-          z-index: 1;
-          background: black;
-          color: white;
-          cursor: pointer;
-        }
-        .flip .card .back {
-          -webkit-transform: rotatey(-180deg);
-          background: blue;
-          background: white;
-          color: black;
-          cursor: pointer;
-        }
-        
-script          
-        $('.flip').click(function(){
-          $(this).find('.card').addClass('flipped').mouseleave(function(){
-            $(this).removeClass('flipped');
-          });
-          return false;
-        });
-        
-html
-        <div class="flip"> 
-          <div class="card"> 
-            <div class="face front"> 
-              Front
-            </div> 
-            <div class="face back"> 
-              Back
-            </div> 
-          </div> 
-        </div> 
-         *
-         */
-        
-        html += '<li class="card shadowed-background id-' + app.model.film_id + '" data-id="' + app.model.film_id + '" data-name="' + deeplink_name + '" data-directory="' + film.data.directory + '" data-film="' + film.data.filename + '" data-poster="' + film.data.poster + '">';
+        html += '' + 
+          '<li class="card shadowed-background id-' + app.model.film_id + '" data-id="' + app.model.film_id + '" data-name="' + deeplink_name + '" data-directory="' + film.data.directory + '" data-film="' + film.data.filename + '" data-poster="' + film.data.poster + '">';
 
         if (!film.data.poster) {
-            // Add empty frame
-            html += '' + '<img src="" alt="" border="0" width="140" height="200" class="" />' + '<a href="javascript:void(0);" target="_self" class="empty-button"></a>';
+          // Add empty frame
+          html += '' + 
+            '<img src="" alt="" border="0" width="140" height="200" class="" />' + '<a href="javascript:void(0);" target="_self" class="empty-button"></a>';
         }
         else {
-            if (!check_for_collection(film)) {
-                // Film
-                html += '' + '<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + '<a href="' + app.model.film_uri + '" target="_blank" class="play-button"></a>';
-            }
-            else {
-                // Collection
-                html += '' + '<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + '<a href="javascript:void(0);" target="_self" class="collection-button"></a>';
-            }
+          if (!check_for_collection(film)) {
+            // Film
+            html += '' + 
+              '<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + '<a href="' + app.model.film_uri + '" target="_blank" class="play-button"></a>';
+          }
+          else {
+            // Collection
+            html += '' + 
+              '<img src="' + app.model.poster_uri + '" alt="' + film.name + '" border="0" width="140" height="200" class="" />' + '<a href="javascript:void(0);" target="_self" class="collection-button"></a>';
+          }
         }
 
         if (!film.data.poster) {
-            // Add search suggection
-            html += '<div class="google-search">' + film.name + " " + film.year + "<br />" + '<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >Filmposter...</a>' + '</div>';
+          // Add search suggection
+          html += '' + 
+            '<div class="google-search">' + film.name + " " + film.year + "<br />" + 
+              '<a href="http://www.google.nl/search?q=' + search_name + '+' + film.year + '&hl=nl&tbo=d&source=lnms&tbm=isch&sa=X" target="_blank" >Filmposter...</a>' + 
+            '</div>';
         }
-
-        // CRITICAL: filetype!=mp4 [nodub] [nosub] | NOTICE: [lowres] [screener] | INFO: [collection] [remake]
+        
+        // Bookmarks
         if (film.data.filetype != "mp4") {
-            html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">' + film.data.filetype + '</div></div>';
+          html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">' + film.data.filetype + '</div></div>';
         }
         if (film.data.count > 1 && !check_for_collection(film)) {
-            html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">' + film.data.count + 'X</div></div>';
+          html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">' + film.data.count + 'X</div></div>';
         }
         if (!film.data.types && film.data.filetype == "mp4") {
-            html += '<div class="bookmark"><i class="icon-bookmark hd"></i><div class="text-bookmark near-light">HD</div></div>';
+          html += '<div class="bookmark"><i class="icon-bookmark hd"></i><div class="text-bookmark near-light">HD</div></div>';
         }
         if (film.data.types) {
           $.each(film.data.types, function(key, type) {
             switch(type) {
-              //Info
+              // HD
               case "collection":
                 html += '<div class="bookmark"><i class="icon-bookmark cl"></i><div class="text-bookmark near-light">CL</div></div>';
                 break;
-              case "remake":
-                html += '<div class="bookmark"><i class="icon-bookmark info"></i><div class="text-bookmark dark">RM</div></div>';
-                break;
-              //Notice
+              // Notice
               case "lowres":
                 html += '<div class="bookmark"><i class="icon-bookmark notice"></i><div class="text-bookmark dark">LR</div></div>';
                 break;
               case "screener":
                 html += '<div class="bookmark"><i class="icon-bookmark notice"></i><div class="text-bookmark dark">SC</div></div>';
                 break;
-              //Warning
+              // Warning
               case "nodub":
                 html += '<div class="bookmark"><i class="icon-bookmark warning"></i><div class="text-bookmark light">DU</div></div>';
                 break;
@@ -526,7 +473,7 @@ html
             }
           });
         }
-        html += '<div class="small awesome filter-button"><i class="icon-plus-sign"></i></div>';
+        html += '<div class="small awesome add-filter-button"><i class="icon-plus-sign"></i></div>';
 
         html += '</li>';
         target.append(html);
@@ -534,16 +481,28 @@ html
     }
     app.model.film_id = '';
     var images = $('img');
-    images.addClass('grayscale').animate({ opacity : 1 }, 1000, function() {
-      images.addClass('disabled');
-    });
+    images
+      .addClass('grayscale')
+      .animate({ opacity : 1 }, 1000, function() {
+        images
+          .addClass('disabled');
+        });
   }
 
   /**
    * Add menu outside wrapper
    */
   function add_menu() {
-    $('body').prepend('' + '<div id="menu">' + '<div class="menu-inner">' + '<a href="javascript:void(0);" class="small blue awesome synced-button"><i class="icon-cloud-upload"></i></a>' + '<a href="javascript:void(0);" class="small awesome logout-button" onclick="app.events.dispatch(\'DO_LOGOUT\'); return false;">Logout</a>' + '<a href="javascript:void(0);" class="small yellow awesome suggest-button"><i class="icon-random"></a>' + '<div class="paging"></div>' + '</div>' + '</div>');
+    $('body')
+      .prepend(
+        '<div id="menu">' + 
+          '<div class="menu-inner">' + 
+            '<a href="javascript:void(0);" class="small blue awesome synced-button"><i class="icon-cloud-upload"></i></a>' + 
+            '<a href="javascript:void(0);" class="small awesome logout-button" onclick="app.events.dispatch(\'DO_LOGOUT\'); return false;">Logout</a>' + 
+            '<a href="javascript:void(0);" class="small yellow awesome suggest-button"><i class="icon-random"></a>' + 
+            '<div class="paging"></div>' + 
+          '</div>' + 
+        '</div>');
     $('#menu .synced-button').hide();
   }
 
@@ -599,11 +558,11 @@ html
     
     // create film batches
     for (var i = 0; i < app.model.films_json.payload.length; i++) {
-        if (!(i % batch_length) && i) {
-            film_batches.push(film_batch);
-            film_batch = [];
-        }
-        film_batch.push(app.model.films_json.payload[i]);
+      if (!(i % batch_length) && i) {
+        film_batches.push(film_batch);
+        film_batch = [];
+      }
+      film_batch.push(app.model.films_json.payload[i]);
     };
     film_batches.push(film_batch);
     
