@@ -162,7 +162,7 @@ $.extend(Controller.prototype,
 		var type = 'POST';
 		var dataType = "json";
 		var cache = false;
-		var data = { };
+		var data = {};
 
 		return this.execute(url, type, dataType, cache, data, method);
 	},
@@ -200,9 +200,7 @@ $.extend(Controller.prototype,
 		var type = 'POST';
 		var dataType = "json";
 		var cache = false;
-		var data =
-		{
-		};
+		var data = {};
 
 		return this.execute(url, type, dataType, cache, data, method);
 	},

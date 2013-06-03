@@ -225,9 +225,9 @@ class Data_model extends CI_Model {
     // start transaction
     $this -> pdo -> beginTransaction();
 
-    // update all db_films to do_deactivate = 1
+    // update all db_films to do_deactivate = TRUE
     try {
-      $do_deactivate_film -> execute(array(':do_deactivate' => 1));
+      $do_deactivate_film -> execute(array(':do_deactivate' => TRUE));
       $do_deactivate_film -> closeCursor();
       $response['error'] = FALSE;
       $response['msg'] = 'Synchronization prepared successfully';
@@ -249,7 +249,7 @@ class Data_model extends CI_Model {
    *
    * @param $_parameters An Array containing all mandatory and optional params.
    *
-   * @return $response An Array containg an error bool, a status message and a payload object, containing the requested data.
+   * @return $response An Array containing an error bool, a status message and a payload object, containing the requested data.
    */
   public function synchronize_films($_parameters) {
     $response['error'] = FALSE;
@@ -341,14 +341,14 @@ class Data_model extends CI_Model {
           }
         }
         
-				else if (count($do_sync) && !$do_sync[0]['active']) {
+	    else if (count($do_sync) && !$do_sync[0]['active']) {
           // Activate a deactivated film in db
           try {
             $update_film -> execute(array(
-              ':active' => 1,
+              ':active' => TRUE,
               ':name' => $film['name'],
               ':year' => $film['year'],
-              ':do_deactivate' => 0
+              ':do_deactivate' => FALSE
             ));
             $update_film -> closeCursor();
             array_push($response['films'], array(
@@ -372,13 +372,13 @@ class Data_model extends CI_Model {
         }
 
         else {
-          // Film not changed, set deactivation flag to 0
+          // Film not changed, set deactivation flag to FALSE
           try {
             $update_film -> execute(array(
-              ':active' => 1,
+              ':active' => TRUE,
               ':name' => $film['name'],
               ':year' => $film['year'],
-              ':do_deactivate' => 0
+              ':do_deactivate' => FALSE
             ));
             $update_film -> closeCursor();
             array_push($response['films'], array(
@@ -419,7 +419,7 @@ class Data_model extends CI_Model {
    *
    * @param $_parameters An Array containing all mandatory and optional params.
    *
-   * @return $response An Array containg an error bool, a status message and a payload object, containing the requested data.
+   * @return $response An Array containing an error bool, a status message and a payload object, containing the requested data.
    */
   public function finish_synchronization($_parameters) {
     $response['error'] = FALSE;
@@ -434,8 +434,8 @@ class Data_model extends CI_Model {
     // deactivate films
     try {
       $update_film -> execute(array(
-        ':active' => 0,
-        ':do_deactivate' => 1
+        ':active' => FALSE,
+        ':do_deactivate' => TRUE
       ));
       $update_film -> closeCursor();
     }
@@ -444,9 +444,9 @@ class Data_model extends CI_Model {
       $response['msg'] = 'Error executing activation with update_film : ' . $e -> getMessage();
     }
 
-    // update all db_films to do_deactivate = 0
+    // update all db_films to do_deactivate = FALSE
     try {
-      $do_deactivate_film -> execute(array(':do_deactivate' => 0));
+      $do_deactivate_film -> execute(array(':do_deactivate' => FALSE));
       $do_deactivate_film -> closeCursor();
       $response['error'] = FALSE;
     }
@@ -458,7 +458,7 @@ class Data_model extends CI_Model {
     // end transaction
     $this -> pdo -> commit();
 		
-		if (!$response['error']) $response['msg'] = 'Synchronization finished successfully';
+	if (!$response['error']) $response['msg'] = 'Synchronization finished successfully';
 		
     return $response;
   }

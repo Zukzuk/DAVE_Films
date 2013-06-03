@@ -40,7 +40,7 @@ class Login_model extends CI_Model
 
 	public function process_login($_parameters)
 	{
-		$base64_name = $_parameters['username'];
+        $base64_name = $_parameters['username'];
 		$base64_pw = $_parameters['password'];
 		$login_type = $_parameters['login_type'];
 
