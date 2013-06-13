@@ -89,6 +89,7 @@
     app.events.dispatch('NAVIGATE', {
       uri : data.uri
     });
+    on_uri_change();
   }
 
   /**
@@ -124,6 +125,7 @@
     app.events.dispatch('NAVIGATE', {
       uri : app.model.get_routing_uri()
     });
+    on_uri_change();
   }
 
   /**
@@ -333,9 +335,9 @@
   }
 
   /**
-   * @deprecated
+   * //@deprecated
    * Use this if films are progressively streamed from http protocol
-   */  
+   */
   function on_uri_change() {            
     if (app.model.check_routing_filter('id')) {
       // Deeplink found, hide gallery, show player
@@ -684,7 +686,7 @@
   }
 
   /**
-   * @deprecated
+   * //@deprecated
    * Used for http progressive streaming.
    * Stops streaming after 10 minutes or so.
    */
