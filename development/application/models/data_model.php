@@ -51,7 +51,10 @@ class Data_model extends CI_Model {
       $directory = $directories[$key];
       $dir_name = str_replace("F:/", "", $directory);
 
-      if ($dir_name != "System Volume Information" && $dir_name != "FFOutput" && substr($dir_name, 1) != "RECYCLE.BIN") {
+      if ($dir_name != "System Volume Information" && 
+          $dir_name != "FFOutput" && 
+          $dir_name != "msdownld.tmp" && 
+          substr($dir_name, 1) != "RECYCLE.BIN") {
         $payload[$count]['name'] = "";
         $payload[$count]['year'] = "";
         $payload[$count]['data']['series'] = FALSE;
@@ -262,6 +265,7 @@ class Data_model extends CI_Model {
 
     // Prepare query statement
     $check_film = $this -> pdo -> prepare('SELECT * FROM films WHERE name=:name AND year=:year');
+    $film_id = $this -> pdo -> prepare('SELECT id FROM films WHERE name=:name AND year=:year');
     $add_film = $this -> pdo -> prepare('INSERT INTO films (name, year) VALUES(:name, :year)');
     $update_film = $this -> pdo -> prepare('UPDATE films SET active=:active, do_deactivate=:do_deactivate WHERE name=:name AND year=:year');
 
@@ -388,7 +392,7 @@ class Data_model extends CI_Model {
               'name' => $film['name'],
               'year' => $film['year']
             ));
-            $response['synced'] = TRUE;
+            //$response['synced'] = TRUE;
           }
           catch(PDOException $e) {
             array_push($response['films'], array(
@@ -407,9 +411,9 @@ class Data_model extends CI_Model {
     $this -> pdo -> commit();
 
     if ($response['synced'])
-      $response['msg'] = count($response['films']) . ' films were synced.';
+      $response['msg'] = count($response['films']) . ' films were synced';
     else
-      $response['msg'] = 'No films to sync.';
+      $response['msg'] = 'No films to sync';
 
     return $response;
   }
@@ -458,8 +462,30 @@ class Data_model extends CI_Model {
     // end transaction
     $this -> pdo -> commit();
 		
-	if (!$response['error']) $response['msg'] = 'Synchronization finished successfully';
+	  if (!$response['error']) $response['msg'] = 'Synchronization finished successfully';
 		
+    return $response;
+  }
+
+  /**
+   * CRUD tags
+   */
+  public function crud_tags($_parameters) {
+    $response['error'] = FALSE;
+    $response['session'] = TRUE;
+    
+    $crud_type = $_parameters['crud_type'];
+    $film_id = $_parameters['film_id'];
+    $tag = $_parameters['tag'];
+    
+    // start transaction
+    $this -> pdo -> beginTransaction();
+
+    // end transaction
+    $this -> pdo -> commit();
+    
+    if (!$response['error']) $response['msg'] = 'Synchronization finished successfully';
+    
     return $response;
   }
 
@@ -569,7 +595,8 @@ class Data_model extends CI_Model {
   private function _get_subtitle_by_filetype($file) {
     $result = FALSE;
     $filetype = strtolower(substr($file, -3));
-    if ($filetype == 'srt' || $filetype == 'sub') {
+    if( $filetype == 'srt' || 
+        $filetype == 'sub') {
       $result['subtitle'] = $file;
     }
     return $result;
@@ -578,7 +605,8 @@ class Data_model extends CI_Model {
   private function _get_poster_by_filetype($file) {
     $result = FALSE;
     $filetype = strtolower(substr($file, -3));
-    if ($filetype == 'jpg') {
+    if( $filetype == 'jpg' || 
+        $filetype == 'png') {
       $result['poster'] = $file;
     }
     return $result;
