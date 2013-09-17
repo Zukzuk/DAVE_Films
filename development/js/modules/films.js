@@ -395,6 +395,7 @@
 
         var target = $('#films ul');
         target.empty();
+        console.log(app.model.films_json.payload);
         for (var i = start_item; i < end_item; i++) {
           app.model.film_id = i;
           var film = app.model.films_json.payload[i];
@@ -577,7 +578,7 @@
               // sync batch
               app.data.synchronize_films(film_batch).success(function(response) {
                 // log each batch
-                console.log(response);
+                //console.log(response);
                 sync_count++;
                 if (response.synced) {
                   // add film to menu if added to db
@@ -594,11 +595,11 @@
                   // add synced films to model for later use
                   app.model.synced_films = synced_films;
                   // log synced films
-                  console.log(app.model.synced_films);
+                  if(app.model.synced_films.length) console.log(app.model.synced_films);
                 }
                 // finish sync
                 app.data.finish_synchronization().success(function(response) {
-                  console.log(response);
+                  //console.log(response);
                 });
               });
             });

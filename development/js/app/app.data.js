@@ -168,6 +168,28 @@ $.extend(Data.prototype,
 	},
 
 	/**
+	 * CRUD tags to search
+	 *
+	 */
+	crud_tags : function(_crud_type, _film_id, _tag)
+	{
+		var method = 'crud_tags';
+		var url = app.model.base_url + "secureddata/" + method;
+
+		var type = 'POST';
+		var dataType = "json";
+		var cache = false;
+		var data =
+		{
+		  crud_type : _crud_type,
+		  film_id : _film_id,
+		  tag : _tag
+		};
+
+		return this.execute(url, type, dataType, cache, data, method);
+	},
+	
+	/**
 	 * Get all available items in a collection
 	 *
 	 */

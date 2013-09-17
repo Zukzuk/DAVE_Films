@@ -88,6 +88,12 @@ class Secureddata extends CI_Controller {
     $optional = array();
     $this -> execute(__FUNCTION__, $mandatory, $optional);
   }
+  
+  public function crud_tags() {
+    $mandatory = array();
+    $optional = array();
+    $this -> execute(__FUNCTION__, $mandatory, $optional);
+  }
 
   public function get_collection() {
     $mandatory = array('directory');
