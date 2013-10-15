@@ -1,7 +1,0 @@
-Alias /films/ "f:/"
-
-<Directory "f:/">
-    Options Indexes FollowSymLinks MultiViews
-    AllowOverride all
-    Require all granted
-</Directory>

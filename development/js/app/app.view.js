@@ -68,15 +68,15 @@ $.extend(View.prototype,
 		app.events.dispatch('UPDATE_HTML', { update : 'default_page_update' });
 	},
 
-	films_view : function(data)
+	portfolio_view : function(data)
 	{
 		$("#container").hide().empty().html(data.html).show();
-		app.data.get_user_privileges().success(function(response)
-		{
-			app.model.current_page = 'films';
-			app.events.dispatch('UPDATE_HTML', { update : 'default_page_update' });
-			app.view.add_module('films');
-		});
+		//app.data.get_user_privileges().success(function(response)
+		//{
+  		app.model.current_page = 'portfolio';
+  		app.events.dispatch('UPDATE_HTML', { update : 'default_page_update' });
+  		app.view.add_module('portfolio');
+		//});
 	},
 	
 	add_module: function(module_name)
@@ -97,4 +97,5 @@ $.extend(View.prototype,
 			if(!$(script).is('#app') && !$(script).is('#lib')) $(script).remove();
 		});
 	}
+	
 });

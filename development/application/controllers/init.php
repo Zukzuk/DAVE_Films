@@ -41,14 +41,14 @@ class Init extends CI_Controller
 	private function load_template()
     {
     	// SET COMMON VARS
-		$data['page_title'] = 'Films';
-		$data['app_name'] = 'Films';
+		$data['page_title'] = 'Portfolio';
+		$data['app_name'] = 'Portfolio';
 		$data['google_track_id'] = 'UA-xxxxxxxx-1';
 		$data['language'] = 'english';		
 		$data['js_deeplink'] = 'true';
 		$data['responsive'] = 'true';
 		$data['login_target'] = 'self'; // self, facebook, linkedin, etc
-		$data['login_at_startup'] = 'true';
+		$data['login_at_startup'] = 'false';
 		$data['developer'] = $this->input->get('developer');
 		
     	$this->load->vars($data);

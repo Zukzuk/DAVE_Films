@@ -19,7 +19,7 @@
  *
  */
  	define('APP_VERSION', '1.0.0 Alpha');
-	define('ENVIRONMENT', 'development');
+	define('ENVIRONMENT', 'production');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

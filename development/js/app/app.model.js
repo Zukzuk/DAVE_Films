@@ -27,11 +27,11 @@ $.extend(Model.prototype, {
     device : {
         type : "unknown",
         mobile_small : 320,
-        mobile : 480,
-        tablet_small : 640,
+        mobile : 320,
+        tablet_small : 960,
         tablet : 960,
-        desktop : 1300,
-        wide : 1920,
+        desktop : 1280,
+        wide : 2560,
         full : 2560
     },
     routing : {
@@ -42,11 +42,11 @@ $.extend(Model.prototype, {
     external_uri_change : function(data) { },
     current_page : '',
 
-    filter_types : ['play', 'id'],
-    pages : ["login", "test"],
-    securedpages : ["films"],
-    landing_page : 'login',
-    landing_securedpage : 'films',
+    filter_types : ['client', 'project'],
+    pages : ["portfolio"],
+    securedpages : [""],
+    landing_page : 'portfolio',
+    landing_securedpage : '',
 
     // app flags
     startup_complete : false,
@@ -60,7 +60,8 @@ $.extend(Model.prototype, {
     window_height : 0,
     scroll_top : 0,
     scroll_interval : {},
-
+    
+    /*
     current_offset : 0,
     num_of_pages : 0,
     films_per_row : 0,
@@ -69,7 +70,7 @@ $.extend(Model.prototype, {
     search_offset : 0,
     search_id : 0,
 
-    server_base : 'http://localhost/films/',
+    server_base : 'http://localhost/',
     file_base : 'file:///F:/',
     films_json : { },
     alphabet_count : 0, //'#'
@@ -79,6 +80,7 @@ $.extend(Model.prototype, {
     film_poster : '',
     film_uri : '',
     poster_uri : '',
+    */
 
     ///////////////
     // initialize
@@ -318,57 +320,28 @@ $.extend(Model.prototype, {
         if ( typeof device_change == 'undefined')
             device_change = false;
 
-        if (this.window_size[0] <= this.device.mobile_small && this.device.type != 'mobile_small') {
-            $('body').removeClass(this.device.type).addClass('mobile_small');
-            this.device.type = 'mobile_small';
-            this.films_per_row = 1;
-            device_change = true;
-        }
-        else if (this.window_size[0] > this.device.mobile_small && this.window_size[0] <= this.device.mobile && this.device.type != 'mobile') {
+        if (this.window_size[0] <= this.device.mobile && this.device.type != 'mobile') {
             $('body').removeClass(this.device.type).addClass('mobile');
             this.device.type = 'mobile';
-            this.films_per_row = 2;
             device_change = true;
         }
-        else if (this.window_size[0] > this.device.mobile && this.window_size[0] <= this.device.tablet_small && this.device.type != 'tablet_small') {
-            $('body').removeClass(this.device.type).addClass('tablet_small');
-            this.device.type = 'tablet_small';
-            this.films_per_row = 3;
-            device_change = true;
-        }
-        else if (this.window_size[0] > this.device.tablet_small && this.window_size[0] <= this.device.tablet && this.device.type != 'tablet') {
+        else if (this.window_size[0] > this.device.mobile && this.window_size[0] <= this.device.tablet && this.device.type != 'tablet') {
             $('body').removeClass(this.device.type).addClass('tablet');
             this.device.type = 'tablet';
-            this.films_per_row = 4;
             device_change = true;
         }
         else if (this.window_size[0] > this.device.tablet && this.window_size[0] <= this.device.desktop && this.device.type != 'desktop') {
             $('body').removeClass(this.device.type).addClass('desktop');
             this.device.type = 'desktop';
-            this.films_per_row = 6;
             device_change = true;
         }
-        else if (this.window_size[0] > this.device.desktop && this.window_size[0] <= this.device.wide && this.device.type != 'wide') {
-            $('body').removeClass(this.device.type).addClass('wide');
-            this.device.type = 'wide';
-            this.films_per_row = 8;
-            device_change = true;
-        }
-        else if (this.window_size[0] > this.device.wide && this.device.type != 'full') {
+        else if (this.window_size[0] > this.device.desktop && this.device.type != 'full') {
             $('body').removeClass(this.device.type).addClass('full');
             this.device.type = 'full';
-            this.films_per_row = 10;
             device_change = true;
         }
 
         if (device_change) {
-            var film_list = $('#films li');
-            film_list.removeClass('left');
-            for (var i = 0; i < film_list.length; i++) {
-                if (!(i % this.films_per_row))
-                    $(film_list[i]).addClass('left');
-            };
-            console.log("device.type : " + this.device.type + " | size : " + this.window_size[0] + "/" + this.window_size[1]);
             return true;
         }
         return false;
@@ -377,7 +350,7 @@ $.extend(Model.prototype, {
     setup_window : function() {
         //this.window_width = $(window).width();
         //this.window_height = $(window).height();
-        this.scroll_top = $('.wrapper').scrollTop();
+        //this.scroll_top = $('.wrapper').scrollTop();
         //console.log('window_width : ' + this.window_width);
         //console.log('window_height : ' + this.window_height);
         //console.log('scroll_top : ' + this.scroll_top);
