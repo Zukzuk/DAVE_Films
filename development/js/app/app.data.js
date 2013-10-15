@@ -96,5 +96,101 @@ $.extend(Data.prototype,
 	// OTHER MODULES
 	///////////////
 
+	/**
+	 * Finish synchronization with database
+	 *
+	 */
+	finish_synchronization : function(_films)
+	{
+		var method = 'finish_synchronization';
+		var url = app.model.base_url + "secureddata/" + method;
+
+		var type = 'POST';
+		var dataType = "json";
+		var cache = false;
+		var data = {};
+		
+		return this.execute(url, type, dataType, cache, data, method);
+	},
+
+	/**
+	 * CRUD tags to search
+	 *
+	 */
+	crud_tags : function(_crud_type, _film_id, _tag)
+	{
+		var method = 'crud_tags';
+		var url = app.model.base_url + "secureddata/" + method;
+
+		var type = 'POST';
+		var dataType = "json";
+		var cache = false;
+		var data =
+		{
+		  crud_type : _crud_type,
+		  film_id : _film_id,
+		  tag : _tag
+		};
+
+		return this.execute(url, type, dataType, cache, data, method);
+	},
 	
+	/**
+	 * Get all available items in a collection
+	 *
+	 */
+	get_collection : function(_directory)
+	{
+		var method = 'get_collection';
+		var url = app.model.base_url + "secureddata/" + method;
+
+		var type = 'POST';
+		var dataType = "json";
+		var cache = false;
+		var data =
+		{
+			directory : _directory
+		};
+
+		return this.execute(url, type, dataType, cache, data, method);
+	},
+
+	/**
+	 * Get film player iframe
+	 * DEPRECATED!
+	 */
+	get_player_iframe : function(_film, _poster)
+	{
+		var method = 'get_player_iframe';
+		var url = app.model.base_url + "secureddata/" + method;
+
+		var type = 'POST';
+		var dataType = "json";
+		var cache = false;
+		var data =
+		{
+			film : _film,
+			poster : _poster
+		};
+
+		return this.execute(url, type, dataType, cache, data, method);
+	},
+
+	/**
+	 * Get imdb data for a specific movie
+	 * DEPRECATED!
+	 */
+	get_imdb_data : function(_imdb_name, _year)
+	{
+		var method = 'get_imdb_data';
+		var url = 'http://imdbapi.org/?q=' + _imdb_name + '&year=' + _year + '&type=json&lang=en-US';
+		// + "&type=json&limit=1";
+
+		var type = 'GET';
+		var dataType = "json";
+		var cache = false;
+		var data = {};
+
+		return this.execute(url, type, dataType, cache, data, method);
+	}
 }); 

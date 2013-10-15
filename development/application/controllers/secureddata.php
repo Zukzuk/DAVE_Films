@@ -65,6 +65,51 @@ class Secureddata extends CI_Controller {
   // API FILMS MODULE
   ///////////////
 
+  public function get_all_films() {
+    $mandatory = array();
+    $optional = array();
+    $this -> execute(__FUNCTION__, $mandatory, $optional);
+  }
+
+  public function prepare_synchronization() {
+    $mandatory = array();
+    $optional = array();
+    $this -> execute(__FUNCTION__, $mandatory, $optional);
+  }
+
+  public function synchronize_films() {
+    $mandatory = array('films');
+    $optional = array();
+    $this -> execute(__FUNCTION__, $mandatory, $optional);
+  }
+
+  public function finish_synchronization() {
+    $mandatory = array();
+    $optional = array();
+    $this -> execute(__FUNCTION__, $mandatory, $optional);
+  }
+  
+  public function crud_tags() {
+    $mandatory = array();
+    $optional = array();
+    $this -> execute(__FUNCTION__, $mandatory, $optional);
+  }
+
+  public function get_collection() {
+    $mandatory = array('directory');
+    $optional = array();
+    $this -> execute(__FUNCTION__, $mandatory, $optional);
+  }
+
+  public function get_player_iframe() {
+    $mandatory = array(
+      'film',
+      'poster'
+    );
+    $optional = array();
+    $this -> execute(__FUNCTION__, $mandatory, $optional);
+  }
+
   ///////////////
   // PRIVATE METHODS
   ///////////////
